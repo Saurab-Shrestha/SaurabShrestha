@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import OptimizedImage from '../../components/OptimizedImage';
 
 const ProfileImage = () => (
   <motion.div
@@ -11,7 +12,7 @@ const ProfileImage = () => (
     transition={{ duration: 1, delay: 0.5, type: "spring", stiffness: 100 }}
   >
     <motion.div
-      className="relative w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80"
+      className="relative w-56 h-56 md:w-80 md:h-80 lg:w-96 lg:h-96"
       whileHover={{ scale: 1.05, rotate: 2 }}
       transition={{ duration: 0.3 }}
     >
@@ -28,15 +29,12 @@ const ProfileImage = () => (
       
       {/* Profile image placeholder */}
       <div className="absolute inset-4 rounded-full bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center shadow-2xl overflow-hidden">
-        <div className="w-full h-full bg-gradient-to-br from-orange-300 to-red-400 flex items-center justify-center">
-          <div className="text-6xl md:text-8xl font-bold text-white opacity-50">SS</div>
-        </div>
-        {/* Replace the above div with actual image: */}
-        {/* <img 
-          src="/path-to-saurab-image.jpg" 
+        <OptimizedImage 
+          src="/assets/image_me.png" 
           alt="Saurab Shrestha" 
           className="w-full h-full object-cover"
-        /> */}
+          lazy={false}
+        />
       </div>
       
       {/* Floating mini shapes around profile */}
@@ -143,7 +141,7 @@ const HeroSection = () => {
 
   return (
     <motion.section
-      className="w-full min-h-screen flex flex-col justify-center items-stretch relative"
+      className="w-full min-h-screen flex flex-col justify-center items-stretch relative spacing-section-lg"
       style={{ background: 'transparent' }}
       animate={controls}
     >
@@ -152,13 +150,13 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center"
         >
           {/* Left side - Text content */}
-          <div className="order-2 lg:order-1 space-y-8">
+          <div className="order-2 lg:order-1 space-y-10">
             <motion.div variants={itemVariants}>
               <motion.h1
-                className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight text-gray-900 tracking-tight"
+                className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight text-gray-900 tracking-tight typography-h2"
                 style={{ letterSpacing: '-0.02em' }}
                 whileHover={{
                   scale: 1.02,
@@ -182,7 +180,7 @@ const HeroSection = () => {
             
             <motion.h2
               variants={itemVariants}
-              className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-700 min-h-[3rem] tracking-wide"
+              className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-700 min-h-[3rem] tracking-wide typography-h3"
               style={{ letterSpacing: '0.08em' }}
             >
               <TypewriterText 
@@ -193,7 +191,7 @@ const HeroSection = () => {
             
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl font-semibold text-gray-600 leading-relaxed"
+              className="text-lg md:text-xl font-semibold text-gray-600 leading-relaxed typography-lead"
             >
               I craft{' '}
               <motion.span
@@ -207,7 +205,7 @@ const HeroSection = () => {
             
             <motion.div 
               variants={itemVariants}
-              className="flex flex-wrap gap-3"
+              className="flex flex-wrap gap-4"
             >
               {tags.map((tag, idx) => (
                 <motion.div
@@ -230,7 +228,7 @@ const HeroSection = () => {
             
             <motion.div 
               variants={itemVariants}
-              className="flex flex-wrap gap-4 pt-4"
+              className="flex flex-wrap gap-6 pt-6"
             >
               <Link to="/work">
                 <motion.button
@@ -239,7 +237,7 @@ const HeroSection = () => {
                     boxShadow: "0 10px 25px rgba(249, 115, 22, 0.3)"
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all duration-200 tracking-wide"
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg transition-all duration-200 tracking-wide focusable-button"
                   style={{ letterSpacing: '0.08em' }}
                 >
                   View My Work
@@ -253,7 +251,7 @@ const HeroSection = () => {
                     borderColor: "#f59e0b"
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="border-2 border-orange-300 text-gray-700 px-8 py-3 rounded-full font-bold text-lg hover:border-orange-400 transition-all duration-200 tracking-wide"
+                  className="border-2 border-orange-300 text-white px-8 py-4 rounded-full font-bold text-lg hover:border-orange-400 transition-all duration-200 tracking-wide focusable-button"
                   style={{ letterSpacing: '0.08em' }}
                 >
                   Get In Touch
@@ -270,14 +268,14 @@ const HeroSection = () => {
       
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="w-6 h-10 border-2 border-orange-400 rounded-full flex justify-center">
+        <div className="w-8 h-12 border-2 border-orange-400 rounded-full flex justify-center">
           <motion.div
-            className="w-1 h-3 bg-orange-500 rounded-full mt-2"
-            animate={{ y: [0, 12, 0] }}
+            className="w-2 h-4 bg-orange-500 rounded-full mt-2"
+            animate={{ y: [0, 16, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
         </div>

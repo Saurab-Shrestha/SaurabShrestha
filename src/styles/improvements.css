@@ -1,0 +1,477 @@
+/* Typography Improvements */
+.typography-h1 {
+  font-size: 3.2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.typography-h2 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+.typography-h3 {
+  font-size: 1.875rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.typography-h4 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  font-weight: 600;
+}
+
+.typography-h5 {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.typography-h6 {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.typography-lead {
+  font-size: 1.25rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.typography-body {
+  line-height: 1.75;
+  color: var(--text-primary);
+}
+
+/* Spacing Improvements */
+.spacing-section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.spacing-section-sm {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.spacing-section-lg {
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
+/* Mobile typography and spacing adjustments */
+@media (max-width: 640px) {
+  .spacing-section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+  .spacing-section-sm { padding-top: 2rem; padding-bottom: 2rem; }
+  .spacing-section-lg { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+  .typography-h1 { font-size: 2rem; line-height: 1.2; }
+  .typography-h2 { font-size: 1.25rem; line-height: 1.35; }
+  .typography-lead { font-size: 1rem; line-height: 1.6; }
+}
+
+.spacing-y-lg {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.spacing-y-xl {
+  margin-top: 6rem;
+  margin-bottom: 6rem;
+}
+
+/* Focus Styles for Accessibility */
+.focus-outline {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.focus-ring {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Enhanced Focus States with Better Visibility */
+.focusable-element {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+  transition: outline 0.2s ease, outline-offset 0.2s ease, box-shadow 0.2s ease;
+}
+
+.focusable-element:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.2);
+}
+
+.focusable-element:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.2);
+}
+
+/* Focus styles for buttons */
+.focusable-button {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+  transition: outline 0.2s ease, outline-offset 0.2s ease, box-shadow 0.2s ease;
+}
+
+.focusable-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.3);
+}
+
+.focusable-button:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.3);
+}
+
+/* Focus styles for links */
+.focusable-link {
+  outline: none;
+  outline-offset: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.focusable-link:focus,
+.focusable-link:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.focusable-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--focus-ring);
+}
+
+/* Disable focus underline for specific links (e.g., nav) */
+.no-focus-underline:focus,
+.no-focus-underline:focus-visible {
+  text-decoration: none;
+}
+
+/* Improved Scroll Progress Indicator */
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--accessible-orange);
+}
+
+.breadcrumb-separator {
+  color: var(--text-tertiary);
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Loading Skeleton Styles */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 2s infinite ease-in-out;
+  border-radius: 0.5rem;
+  opacity: 0.8;
+  will-change: background-position;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  height: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-text:last-child {
+  margin-bottom: 0;
+}
+
+.skeleton-text-lg {
+  height: 1.5rem;
+}
+
+.skeleton-text-sm {
+  height: 0.75rem;
+}
+
+/* Enhanced Mobile Menu Styles */
+.mobile-menu-container {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+  backdrop-filter: blur(4px);
+}
+
+.mobile-menu-panel {
+  position: relative;
+  background: linear-gradient(to bottom right, white, #f9fafb, #fff7ed);
+  border-bottom: 4px solid var(--accessible-orange);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform-origin: top center;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(0);
+}
+
+.mobile-menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.mobile-menu-footer {
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(229, 231, 235, 0.5);
+  background: linear-gradient(to right, rgba(255, 247, 237, 0.5), transparent);
+}
+
+/* Improved Contrast Colors */
+.text-high-contrast {
+  color: var(--text-primary);
+}
+
+.text-medium-contrast {
+  color: var(--text-secondary);
+}
+
+.text-low-contrast {
+  color: var(--text-tertiary);
+}
+
+/* High Contrast Text Utilities for Accessibility */
+.text-contrast-primary {
+  color: #111827; /* Ensures 4.5:1 contrast ratio on light backgrounds */
+}
+
+.text-contrast-secondary {
+  color: #4B5563; /* Ensures 4.5:1 contrast ratio on light backgrounds */
+}
+
+.text-contrast-tertiary {
+  color: #9CA3AF; /* Ensures 3:1 contrast ratio on light backgrounds */
+}
+
+.text-contrast-inverse {
+  color: #F9FAFB; /* For use on dark backgrounds */
+}
+
+/* Background Contrast Utilities */
+.bg-contrast-light {
+  background-color: #FAF8F6;
+}
+
+.bg-contrast-medium {
+  background-color: #F3F4F6;
+}
+
+.bg-contrast-dark {
+  background-color: #111827;
+}
+
+/* Micro-interactions */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Image optimization utilities */
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-rounded {
+  border-radius: 0.5rem;
+}
+
+.img-circle {
+  border-radius: 50%;
+}
+
+.img-shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Lazy loading */
+.lazy-load {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lazy-load.loaded {
+  opacity: 1;
+}
+
+/* Accessibility utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+/* Octagon shape for profile image */
+.octagon-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  overflow: hidden;
+}
+
+.octagon-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  border: 4px solid;
+  box-sizing: border-box;
+}
+
+.octagon-border-inner {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  border: 2px solid;
+  box-sizing: border-box;
+}
+
+.octagon-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.octagon-wrapper {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.octagon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

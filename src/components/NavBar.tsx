@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
@@ -43,19 +43,24 @@ const NavLinkItem = React.memo(({
   };
 
   const linkClasses = useMemo(() => {
-    const base = 'uppercase tracking-wide font-bold px-4 py-2 rounded-full transition-all duration-200 relative overflow-hidden';
+    const base =
+      "uppercase tracking-wide font-bold px-4 py-2 transition-all duration-200 relative focusable-link no-focus-underline";
+  
     if (isActive) {
-      return `${base} border border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-600 shadow-sm`;
+      return `${base} text-orange-600`;
     }
-    return `${base} text-gray-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 hover:text-orange-600 hover:shadow-sm`;
+  
+    return `${base} text-gray-900 hover:text-orange-600`;
   }, [isActive]);
-
+  
+  
   return (
     <motion.div
       variants={linkVariants}
       initial="idle"
       whileHover="hover"
       whileTap="tap"
+      className="hover-scale"
     >
       <Link
         to={link.to}
@@ -65,13 +70,6 @@ const NavLinkItem = React.memo(({
         style={{ letterSpacing: '0.08em' }}
       >
         {link.name}
-        {isActive && (
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-orange-200/30 to-orange-300/30 rounded-full"
-            layoutId="activeLink"
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          />
-        )}
       </Link>
     </motion.div>
   );
@@ -85,6 +83,11 @@ const NavBar: React.FC = () => {
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
+
+  // Refs for focus management
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuToggleButtonRef = useRef<HTMLButtonElement>(null);
+  const firstFocusableElementRef = useRef<HTMLAnchorElement>(null);
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
@@ -116,12 +119,35 @@ const NavBar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
+  // Enhanced focus management for mobile menu
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = 'hidden';
+      
+      // Focus the first focusable element in the mobile menu when it opens
+      setTimeout(() => {
+        if (mobileMenuRef.current) {
+          const focusableElements = mobileMenuRef.current.querySelectorAll(
+            'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])'
+          ) as NodeListOf<HTMLElement>;
+          
+          if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+            firstFocusableElementRef.current = focusableElements[0] as HTMLAnchorElement;
+          }
+        }
+      }, 100);
     } else {
       document.body.style.overflow = '';
+      
+      // Return focus to the menu toggle button when menu closes
+      setTimeout(() => {
+        if (mobileMenuToggleButtonRef.current) {
+          mobileMenuToggleButtonRef.current.focus();
+        }
+      }, 100);
     }
+    
     return () => {
       document.body.style.overflow = '';
     };
@@ -131,14 +157,40 @@ const NavBar: React.FC = () => {
     closeMenu();
   }, [location.pathname, closeMenu]);
 
+  // Enhanced keyboard navigation for mobile menu
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Close menu with Escape key
       if (e.key === 'Escape' && menuOpen) {
         closeMenu();
+        return;
+      }
+      
+      // Handle Tab key navigation within mobile menu
+      if (menuOpen && mobileMenuRef.current && e.key === 'Tab') {
+        const focusableElements = mobileMenuRef.current.querySelectorAll(
+          'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])'
+        ) as NodeListOf<HTMLElement>;
+        
+        if (focusableElements.length === 0) return;
+        
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (e.shiftKey && document.activeElement === firstElement) {
+          // Shift + Tab from first element goes to last
+          lastElement.focus();
+          e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          // Tab from last element goes to first
+          firstElement.focus();
+          e.preventDefault();
+        }
       }
     };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [menuOpen, closeMenu]);
 
   const navbarOpacity = useMemo(() => {
@@ -236,10 +288,11 @@ const NavBar: React.FC = () => {
           <motion.div
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            className="hover-scale"
           >
             <Link
               to="/"
-              className="text-xl md:text-2xl font-black tracking-tight text-gray-900 hover:text-orange-500 transition-all duration-300 rounded-lg group"
+              className="text-xl md:text-2xl font-black tracking-tight text-gray-900 hover:text-orange-500 transition-all duration-300 rounded-lg group focusable-link"
               style={{ letterSpacing: '-0.02em' }}
               aria-label="Saurab Shrestha - Home"
             >
@@ -260,6 +313,7 @@ const NavBar: React.FC = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
+                whileHover={{ y: -2 }}
               >
                 <NavLinkItem
                   link={link}
@@ -271,8 +325,9 @@ const NavBar: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <motion.button
+            ref={mobileMenuToggleButtonRef}
             id="mobile-menu-toggle"
-            className="md:hidden p-2 rounded-xl bg-white/80 hover:bg-orange-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 relative z-[80] shadow-sm border border-gray-200/50"
+            className="md:hidden p-0 w-11 h-11 flex items-center justify-center rounded-none bg-transparent hover:bg-transparent border-0 shadow-none transition-transform duration-200 focus:outline-none relative z-[80] focusable-button"
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu-panel"
@@ -287,23 +342,27 @@ const NavBar: React.FC = () => {
               className="flex items-center justify-center"
             >
               {menuOpen ? (
-                <X size={24} strokeWidth={2.5} className="text-orange-500" />
+                <X size={26} strokeWidth={2.5} className="text-orange-500" />
               ) : (
-                <Menu size={24} strokeWidth={2.5} className="text-orange-500" />
+                <Menu size={26} strokeWidth={2.5} className="text-orange-500" />
               )}
             </motion.div>
           </motion.button>
         </div>
         
-        {/*  Scroll Progress Indicator */}
+        {/* Enhanced Scroll Progress Indicator */}
         <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 shadow-sm"
+          className="absolute bottom-0 left-0 h-2 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 shadow-lg"
           style={{ width: `${scrollProgress}%` }}
           transition={{ duration: 0.1, ease: 'linear' }}
         >
           <motion.div
-            className="absolute top-0 right-0 w-2 h-full bg-orange-600 rounded-r-full"
-            animate={{ opacity: scrollProgress > 5 ? 1 : 0 }}
+            className="absolute top-0 right-0 w-4 h-full bg-orange-600 rounded-r-full shadow-md"
+            animate={{ 
+              opacity: scrollProgress > 5 ? 1 : 0,
+              scale: scrollProgress > 5 ? 1 : 0.8
+            }}
+            transition={{ duration: 0.2 }}
           />
         </motion.div>
       </motion.nav>
@@ -332,38 +391,41 @@ const NavBar: React.FC = () => {
             
             {/* Mobile Menu Panel */}
             <motion.div
+              ref={mobileMenuRef}
               variants={mobileMenuVariants}
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute top-0 left-0 right-0 h-full bg-gradient-to-br from-white via-gray-50 to-orange-50/30 flex flex-col transform-gpu border-b-4 border-orange-400 shadow-2xl"
+              className="absolute top-0 left-0 right-0 h-full bg-gradient-to-br from-white via-gray-50 to-orange-50/30 flex flex-col transform-gpu border-b-4 border-orange-400 shadow-2xl mobile-menu-panel"
               style={{ transformOrigin: 'top center' }}
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation menu"
+              tabIndex={-1}
             >
               {/* Mobile Header */}
               <motion.div 
-                className="flex items-center justify-between px-6 py-4 border-b border-gray-200/50 bg-white/50 backdrop-blur-0"
+                className="flex items-center justify-between px-6 py-5 border-b border-gray-200/50 bg-white/50 backdrop-blur-0 mobile-menu-header"
                 variants={mobileNavItemVariants}
               >
-                <span className="text-xl font-black tracking-tight text-gray-900">
+                <span className="text-2xl font-black tracking-tight text-gray-900">
                   SAURAB <span className="text-orange-500">SHRESTHA</span>
                 </span>
                 <motion.button
-                  className="p-2 rounded-xl hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 shadow-sm border border-gray-200/50"
+                  className="p-3 rounded-xl hover:bg-orange-50 transition-all duration-200 shadow-sm border border-gray-200/50 focusable-button"
                   aria-label="Close menu"
                   onClick={closeMenu}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <X size={24} strokeWidth={2.5} className="text-orange-500" />
+                  <X size={26} strokeWidth={2.5} className="text-orange-500" />
                 </motion.button>
               </motion.div>
               
               {/* Mobile Navigation Links */}
               <motion.div 
-                className="flex-1 flex flex-col items-center justify-center gap-8 px-8 pb-8"
+                ref={mobileMenuRef}
+                className="flex-1 flex flex-col items-center justify-center gap-10 px-10 pb-10 mobile-menu-content"
                 variants={mobileMenuVariants}
               >
                 {navLinks.map((link, index) => (
@@ -385,17 +447,17 @@ const NavBar: React.FC = () => {
               
               {/* Mobile Footer */}
               <motion.div 
-                className="px-6 py-6 text-center text-sm text-gray-500 border-t border-gray-200/50 bg-gradient-to-r from-orange-50/50 to-transparent"
+                className="px-8 py-8 text-center text-sm text-gray-500 border-t border-gray-200/50 bg-gradient-to-r from-orange-50/50 to-transparent mobile-menu-footer"
                 variants={mobileNavItemVariants}
               >
                 <p className="font-medium">© 2025 Saurab Shrestha</p>
-                <p className="text-xs mt-1 text-gray-400">Crafted with ❤️</p>
+                <p className="text-xs mt-2 text-gray-400">Crafted with ❤️</p>
               </motion.div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="h-16 md:h-20" aria-hidden="true" />
+      <div className="h-20 md:h-24" aria-hidden="true" />
     </>
   );
 };

@@ -8,8 +8,8 @@ const Home: React.FC = () => {
   return (
     <main>
       <HeroSection />
-      <FeaturedProjects />
       <AboutPreview />
+      <FeaturedProjects />
       <ContactForm />
     </main>
   );

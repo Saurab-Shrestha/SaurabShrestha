@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SkeletonLoader from '../../components/SkeletonLoader';
 
 const featuredProjects = [
   {
@@ -37,6 +38,17 @@ const featuredProjects = [
 ];
 
 const FeaturedProjects = () => {
+  const [loading, setLoading] = useState(true);
+  
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -57,8 +69,32 @@ const FeaturedProjects = () => {
     },
   };
 
+  if (loading) {
+    return (
+      <section className="w-full py-24 px-6 md:px-16 relative spacing-section">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-20">
+            <div className="skeleton skeleton-text skeleton-text-lg mb-6 w-64 mx-auto"></div>
+            <div className="skeleton skeleton-text w-96 mx-auto"></div>
+          </div>
+
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16">
+            <SkeletonLoader type="project" count={3} />
+          </div>
+
+          {/* View All Projects Button */}
+          <div className="text-center">
+            <div className="skeleton skeleton-text skeleton-text-lg w-48 h-12 mx-auto"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="w-full py-20 px-6 md:px-16 relative">
+    <section className="w-full py-24 px-6 md:px-16 relative spacing-section">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -66,16 +102,16 @@ const FeaturedProjects = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
           <motion.h2
-            className="text-3xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight"
+            className="text-3xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight typography-h2"
             style={{ letterSpacing: '-0.02em' }}
           >
             Featured <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Projects</span>
           </motion.h2>
           <motion.p
-            className="text-lg md:text-xl font-semibold text-gray-600 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl font-semibold text-gray-600 max-w-2xl mx-auto leading-relaxed typography-lead"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -91,16 +127,17 @@ const FeaturedProjects = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16"
         >
           {featuredProjects.map((project) => (
             <motion.div
               key={project.id}
               variants={itemVariants}
-              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden focusable-element"
+              whileHover={{ y: -8 }}
             >
               {/* Project Header */}
-              <div className={`relative h-48 bg-gradient-to-br ${project.color} flex items-center justify-center`}>
+              <div className={`relative h-52 bg-gradient-to-br ${project.color} flex items-center justify-center`}>
                 <div className="text-4xl font-bold text-white opacity-60">
                   {project.title.split(' ').map(word => word[0]).join('')}
                 </div>
@@ -114,21 +151,21 @@ const FeaturedProjects = () => {
               </div>
 
               {/* Project Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+              <div className="p-7">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 typography-h3">
                   {project.title}
                 </h3>
                 
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-5 line-clamp-3 typography-body">
                   {project.description}
                 </p>
 
                 {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-7">
                   {project.technologies.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-md"
+                      className="px-3 py-1.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded-md"
                     >
                       {tech}
                     </span>
@@ -141,7 +178,7 @@ const FeaturedProjects = () => {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg font-semibold text-sm hover:bg-gray-800 transition-colors duration-200"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-lg font-semibold text-sm hover:bg-gray-800 transition-colors duration-200 focusable-element"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -153,7 +190,7 @@ const FeaturedProjects = () => {
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-semibold text-sm hover:from-orange-600 hover:to-red-600 transition-all duration-200"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-semibold text-sm hover:from-orange-600 hover:to-red-600 transition-all duration-200 focusable-element"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -179,7 +216,7 @@ const FeaturedProjects = () => {
         >
           <Link to="/work">
             <motion.button
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-bold text-lg shadow-lg hover:from-orange-600 hover:to-red-600 transition-all duration-200 tracking-wide"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-bold text-lg shadow-lg hover:from-orange-600 hover:to-red-600 transition-all duration-200 tracking-wide focusable-element"
               style={{ letterSpacing: '0.08em' }}
               whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(249, 115, 22, 0.3)" }}
               whileTap={{ scale: 0.95 }}
