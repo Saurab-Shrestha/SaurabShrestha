@@ -85,6 +85,27 @@ yarn build
 npm run build
 ```
 
+## 🌐 Deployment
+
+### GitHub Pages Deployment
+
+This portfolio is configured for automatic deployment to GitHub Pages using GitHub Actions.
+
+1. Push your changes to the `main` branch
+2. The GitHub Actions workflow will automatically build and deploy your site
+3. Your portfolio will be available at `https://[your-username].github.io/my-portfolio/`
+
+For manual deployment, you can also use:
+```bash
+npm run deploy
+```
+
+### Custom Domain (Optional)
+
+To use a custom domain:
+1. Add a `CNAME` file to the `public/` directory with your domain
+2. Configure your domain's DNS settings to point to GitHub Pages
+
 ## 📝 Customization
 
 ### Personal Information

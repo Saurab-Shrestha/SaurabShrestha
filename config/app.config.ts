@@ -21,15 +21,15 @@ export const appConfig = {
   
   // Social Media Links
   social: {
-    linkedin: 'https://linkedin.com/in/your-profile',
-    github: 'https://github.com/your-username',
-    twitter: 'https://twitter.com/your-handle',
+    linkedin: 'https://linkedin.com/in/saurab',
+    github: 'https://github.com/Saurab-Shrestha',
+    twitter: 'https://twitter.com/saurab',
   },
   
   // Contact Information
   contact: {
-    email: 'your-email@example.com',
-    phone: '+1-234-567-8900',
+    email: 'shresthasaurab030@gmail.com',
+    phone: '+977-9860XXXXXX',
   },
   
   // Analytics (for future use)
@@ -45,4 +45,4 @@ export const appConfig = {
   },
 } as const;
 
-export type AppConfig = typeof appConfig; 
+export type AppConfig = typeof appConfig;

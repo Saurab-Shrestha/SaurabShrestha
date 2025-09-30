@@ -216,7 +216,7 @@ const AboutSection = () => {
                 {/* Social Links */}
                 <div className="flex gap-4">
                   <motion.a
-                    href="https://github.com/saurab-shrestha"
+                    href="https://github.com/Saurab-Shrestha"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors duration-200"
@@ -226,7 +226,7 @@ const AboutSection = () => {
                     <Github size={20} />
                   </motion.a>
                   <motion.a
-                    href="https://linkedin.com/in/saurab"
+                    href="https://www.linkedin.com/in/saurab-shrestha-092090182/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200"
@@ -234,16 +234,6 @@ const AboutSection = () => {
                     whileTap={{ scale: 0.9 }}
                   >
                     <Linkedin size={20} />
-                  </motion.a>
-                  <motion.a
-                    href="https://twitter.com/saurab"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-blue-400 text-white rounded-full hover:bg-blue-500 transition-colors duration-200"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Twitter size={20} />
                   </motion.a>
                 </div>
               </motion.div>
