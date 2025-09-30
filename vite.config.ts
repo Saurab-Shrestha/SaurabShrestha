@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import { appConfig } from './config/app.config';
 
 export default defineConfig({
-  base: '/saurabshrestha/',
+  base: '/SaurabShrestha/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
