@@ -21,15 +21,14 @@ export const appConfig = {
   
   // Social Media Links
   social: {
-    linkedin: 'https://linkedin.com/in/saurab',
+    linkedin: 'https://www.linkedin.com/in/saurab-shrestha-092090182/',
     github: 'https://github.com/Saurab-Shrestha',
-    twitter: 'https://twitter.com/saurab',
   },
   
   // Contact Information
   contact: {
     email: 'shresthasaurab030@gmail.com',
-    phone: '+977-9860XXXXXX',
+    phone: '+977-9823590047',
   },
   
   // Analytics (for future use)
