@@ -7,34 +7,84 @@ import SkeletonLoader from '../../components/SkeletonLoader';
 const featuredProjects = [
   {
     id: 1,
-    title: "AI-Powered Task Manager",
-    description: "An intelligent task management system that uses machine learning to prioritize tasks and suggest optimal scheduling.",
-    technologies: ["React", "Python", "TensorFlow", "FastAPI"],
-    category: "AI/ML",
-    githubUrl: "https://github.com/saurab/task-manager",
-    liveUrl: "https://task-manager-demo.com",
+    title: "Home Decor Ecommerce Store",
+    shortDescription: "A full-featured ecommerce platform for home decor items with stripe payment integration.",
+    description: "A scalable ecommerce application built to provide a seamless online shopping experience for home decor products. The platform supports product browsing, cart and checkout functionality, secure payment integration, and an intuitive user interface for both customers and administrators.",
+    image: "/assets/homedecor.png",
+    technologies: ["HTML/CSS", "Django", "Stripe API"],
+    category: "Web Development",
+    githubUrl: "https://github.com/Saurab-Shrestha/Django-Ecommerce",
+    liveUrl: "#",
+    features: [
+      "User authentication and profile management",
+      "Product catalog with search and filtering",
+      "Shopping cart and secure checkout",
+      "Admin dashboard for inventory and order management",
+      "Integrated payment gateway"
+    ],
+    challenges: [
+      "Designing a scalable database schema to handle large product catalogs",
+      "Implementing secure authentication and payment processing"
+    ],
+    solutions: [
+      "Normalized PostgreSQL schema for efficient product and order management",
+      "Integrated Stripe API with robust authentication and encryption mechanisms"
+    ],
     color: "from-orange-200 to-red-300"
   },
   {
     id: 2,
-    title: "E-Commerce Analytics Platform",
-    description: "A comprehensive analytics dashboard for e-commerce businesses with real-time data visualization and predictive insights.",
-    technologies: ["TypeScript", "Node.js", "D3.js", "MongoDB"],
-    category: "Web Development",
-    githubUrl: "https://github.com/saurab/ecommerce-analytics",
-    liveUrl: "https://analytics-demo.com",
+    title: "Tomato Disease Detection",
+    shortDescription: "A CNN-based classification model for identifying tomato plant diseases.",
+    description: "An AI-powered application designed to assist farmers and agricultural workers by detecting diseases in tomato plants from leaf images. The system uses a Convolutional Neural Network (CNN) model trained on labeled datasets of tomato leaves to classify common diseases and provide early detection, reducing crop loss and improving yield.",
+    image: "/assets/tomato.png",
+    technologies: ["Flask", "HTML/CSS", "PyTorch"],
+    category: "AI/ML",
+    githubUrl: "https://github.com/Saurab-Shrestha/TomatoDiseaseIdentification",
+    liveUrl: "#",
+    features: [
+      "Image upload and disease classification",
+      "CNN model trained on tomato leaf datasets",
+      "Web interface for real-time predictions",
+      "Accuracy reports for classification results"
+    ],
+    challenges: [
+      "Training a robust model on limited agricultural image datasets",
+      "Ensuring high accuracy across multiple disease classes"
+    ],
+    solutions: [
+      "Applied data augmentation techniques to expand training samples",
+      "Fine-tuned CNN architecture in PyTorch for better performance"
+    ],
     color: "from-blue-200 to-purple-300"
   },
   {
     id: 3,
-    title: "Mobile Fitness App",
-    description: "A cross-platform fitness application with personalized workout plans, progress tracking, and social features.",
-    technologies: ["React Native", "Firebase", "Redux", "Node.js"],
-    category: "Mobile Development",
-    githubUrl: "https://github.com/saurab/fitness-app",
-    liveUrl: "https://fitness-app-demo.com",
+    title: "Signature Verification using Feature Extraction",
+    shortDescription: "A cross-platform signature verification application using feature extraction techniques.",
+    description: "A robust signature verification system that uses advanced computer vision and machine learning techniques to verify handwritten signatures. The system is designed to be resilient to variations in signature position, rotation, and scale while maintaining high accuracy in detecting forgeries.",
+    image: "/assets/signature.png",
+    technologies: ["Streamlit", "Python", "Machine Learning", "TensorFlow"],
+    category: "AI/ML",
+    githubUrl: "https://github.com/Saurab-Shrestha/signature-verification",
+    liveUrl: "#",
+    features: [
+      "Signature verification",
+      "Feature extraction techniques",
+      "Real-time predictions and accuracy reports"
+    ],
+    challenges: [
+      "Ensuring cross-platform compatibility",
+      "Implementing real-time prediction and accuracy reporting"
+    ],
+    solutions: [
+      "Used Streamlit for consistent experience",
+      "Implemented Computer Vision algorithms models for accurate predictions",
+      "Created a user-friendly web interface for easy access"
+    ],
     color: "from-green-200 to-teal-300"
   }
+  
 ];
 
 const FeaturedProjects = () => {

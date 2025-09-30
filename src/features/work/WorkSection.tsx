@@ -8,146 +8,78 @@ import SkeletonLoader from '../../components/SkeletonLoader';
 const projects: Project[] = [
   {
     id: 1,
-    title: "AI-Powered Task Manager",
-    shortDescription: "An intelligent task management system that uses machine learning to prioritize tasks and suggest optimal scheduling.",
-    description: "This AI-powered task manager revolutionizes personal productivity by leveraging machine learning algorithms to understand your work patterns and automatically prioritize tasks based on urgency, importance, and your historical completion rates. The system continuously learns from your behavior to provide increasingly accurate scheduling suggestions.",
-    image: "/images/task-manager.jpg",
-    technologies: ["React", "Python", "TensorFlow", "FastAPI", "PostgreSQL"],
-    category: "AI/ML",
-    githubUrl: "https://github.com/saurab/task-manager",
-    liveUrl: "https://task-manager-demo.com",
-    features: [
-      "AI-powered task prioritization",
-      "Smart scheduling suggestions",
-      "Progress tracking and analytics"
-    ],
-    challenges: [
-      "Implementing accurate ML models for task prioritization",
-      "Ensuring data privacy and security"
-    ],
-    solutions: [
-      "Used TensorFlow for custom ML models",
-      "Implemented end-to-end encryption"
-    ]
-  },
-  {
-    id: 2,
-    title: "E-Commerce Analytics Platform",
-    shortDescription: "A comprehensive analytics dashboard for e-commerce businesses with real-time data visualization and predictive insights.",
-    description: "Our e-commerce analytics platform provides businesses with actionable insights through real-time data visualization and predictive analytics. The dashboard integrates with major e-commerce platforms to track sales performance, customer behavior, and inventory levels. Advanced machine learning models predict future trends and identify opportunities for growth.",
-    image: "/images/ecommerce-analytics.jpg",
-    technologies: ["TypeScript", "Node.js", "D3.js", "MongoDB", "Express"],
+    title: "Home Decor Ecommerce Store",
+    shortDescription: "A full-featured ecommerce platform for home decor items with stripe payment integration.",
+    description: "A scalable ecommerce application built to provide a seamless online shopping experience for home decor products. The platform supports product browsing, cart and checkout functionality, secure payment integration, and an intuitive user interface for both customers and administrators.",
+    image: "/assets/homedecor.png",
+    technologies: ["HTML/CSS", "Django", "Stripe API"],
     category: "Web Development",
-    githubUrl: "https://github.com/saurab/ecommerce-analytics",
-    liveUrl: "https://analytics-demo.com",
+    githubUrl: "https://github.com/Saurab-Shrestha/Django-Ecommerce",
+    liveUrl: "#",
     features: [
-      "Real-time data visualization",
-      "Predictive analytics",
-      "Custom reporting"
+      "User authentication and profile management",
+      "Product catalog with search and filtering",
+      "Shopping cart and secure checkout",
+      "Admin dashboard for inventory and order management",
+      "Integrated payment gateway"
     ],
     challenges: [
-      "Handling large volumes of real-time data",
-      "Creating intuitive visualizations"
+      "Designing a scalable database schema to handle large product catalogs",
+      "Implementing secure authentication and payment processing"
     ],
     solutions: [
-      "Implemented efficient data processing pipelines",
-      "Used D3.js for interactive charts"
+      "Normalized PostgreSQL schema for efficient product and order management",
+      "Integrated Stripe API with robust authentication and encryption mechanisms"
     ]
   },
+    {
+      id: 2,
+      title: "Tomato Disease Detection",
+      shortDescription: "A CNN-based classification model for identifying tomato plant diseases.",
+      description: "An AI-powered application designed to assist farmers and agricultural workers by detecting diseases in tomato plants from leaf images. The system uses a Convolutional Neural Network (CNN) model trained on labeled datasets of tomato leaves to classify common diseases and provide early detection, reducing crop loss and improving yield.",
+      image: "/assets/tomato.png",
+      technologies: ["Flask", "HTML/CSS", "PyTorch"],
+      category: "AI/ML",
+      githubUrl: "https://github.com/Saurab-Shrestha/TomatoDiseaseIdentification",
+      liveUrl: "#",
+      features: [
+        "Image upload and disease classification",
+        "CNN model trained on tomato leaf datasets",
+        "Web interface for real-time predictions",
+        "Accuracy reports for classification results"
+      ],
+      challenges: [
+        "Training a robust model on limited agricultural image datasets",
+        "Ensuring high accuracy across multiple disease classes"
+      ],
+      solutions: [
+        "Applied data augmentation techniques to expand training samples",
+        "Fine-tuned CNN architecture in PyTorch for better performance"
+      ]
+    },
   {
     id: 3,
-    title: "Mobile Fitness App",
-    shortDescription: "A cross-platform fitness application with personalized workout plans, progress tracking, and social features.",
-    description: "This mobile fitness application offers personalized workout plans based on user goals, fitness levels, and available equipment. The app includes progress tracking with detailed analytics, social features for community support, and integration with wearable devices. Machine learning algorithms adapt workout recommendations based on user performance and feedback.",
-    image: "/images/fitness-app.jpg",
-    technologies: ["React Native", "Firebase", "Redux", "Node.js", "Express"],
-    category: "Mobile Development",
-    githubUrl: "https://github.com/saurab/fitness-app",
-    liveUrl: "https://fitness-app-demo.com",
+    title: "Signature Verification using Feature Extraction",
+    shortDescription: "A cross-platform signature verification application using feature extraction techniques.",
+    description: "A robust signature verification system that uses advanced computer vision and machine learning techniques to verify handwritten signatures. The system is designed to be resilient to variations in signature position, rotation, and scale while maintaining high accuracy in detecting forgeries.",
+    image: "/assets/signature.png",
+    technologies: ["Streamlit", "Python", "Machine Learning", "TensorFlow"],
+    category: "AI/ML",
+    githubUrl: "https://github.com/Saurab-Shrestha/signature-verification",
+    liveUrl: "#",
     features: [
-      "Personalized workout plans",
-      "Progress tracking",
-      "Social community features"
+      "Signature verification",
+      "Feature extraction techniques",
+      "Real-time predictions and accuracy reports"
     ],
     challenges: [
       "Ensuring cross-platform compatibility",
-      "Implementing real-time social features"
+      "Implementing real-time prediction and accuracy reporting"
     ],
     solutions: [
-      "Used React Native for consistent experience",
-      "Integrated Firebase for real-time updates"
-    ]
-  },
-  {
-    id: 4,
-    title: "Real-time Chat Application",
-    shortDescription: "A scalable real-time chat application with end-to-end encryption and file sharing capabilities.",
-    description: "Our real-time chat application provides secure communication with end-to-end encryption, group chats, file sharing, and voice messaging. Built with scalability in mind, the application can handle thousands of concurrent users. Features include message reactions, threaded conversations, and integration with popular productivity tools.",
-    image: "/images/chat-app.jpg",
-    technologies: ["WebSocket", "React", "Node.js", "Redis", "MongoDB"],
-    category: "Web Development",
-    githubUrl: "https://github.com/saurab/chat-app",
-    liveUrl: "https://chat-demo.com",
-    features: [
-      "End-to-end encryption",
-      "Group chats and file sharing",
-      "Voice messaging"
-    ],
-    challenges: [
-      "Ensuring real-time performance at scale",
-      "Implementing robust security measures"
-    ],
-    solutions: [
-      "Used WebSocket for real-time communication",
-      "Implemented comprehensive encryption protocols"
-    ]
-  },
-  {
-    id: 5,
-    title: "Smart Home Automation System",
-    shortDescription: "An IoT-based home automation system that learns user preferences and automates daily routines.",
-    description: "This smart home automation system connects various IoT devices to create a seamless living experience. The system learns user preferences and daily routines to automatically adjust lighting, temperature, and security settings. Voice control integration and mobile app access make home management effortless.",
-    image: "/images/smart-home.jpg",
-    technologies: ["IoT", "Python", "Raspberry Pi", "MQTT", "React"],
-    category: "IoT",
-    githubUrl: "https://github.com/saurab/smart-home",
-    liveUrl: "https://smart-home-demo.com",
-    features: [
-      "Automated lighting and climate control",
-      "Security monitoring",
-      "Voice control integration"
-    ],
-    challenges: [
-      "Integrating diverse IoT devices",
-      "Ensuring system reliability"
-    ],
-    solutions: [
-      "Used MQTT for device communication",
-      "Implemented redundant systems for reliability"
-    ]
-  },
-  {
-    id: 6,
-    title: "Financial Portfolio Tracker",
-    shortDescription: "A comprehensive financial portfolio management tool with real-time market data and risk analysis.",
-    description: "Our financial portfolio tracker helps investors manage their assets with real-time market data, performance analytics, and risk assessment tools. The application provides personalized investment recommendations based on risk tolerance and financial goals. Advanced charting capabilities and automated reporting make financial planning easier.",
-    image: "/images/portfolio-tracker.jpg",
-    technologies: ["React", "Python", "Pandas", "Plotly", "Flask"],
-    category: "Data Science",
-    githubUrl: "https://github.com/saurab/portfolio-tracker",
-    liveUrl: "https://portfolio-tracker-demo.com",
-    features: [
-      "Real-time market data",
-      "Risk analysis and reporting",
-      "Personalized recommendations"
-    ],
-    challenges: [
-      "Processing complex financial data",
-      "Ensuring data accuracy and compliance"
-    ],
-    solutions: [
-      "Used Pandas for data processing",
-      "Implemented data validation pipelines"
+      "Used Streamlit for consistent experience",
+      "Implemented Computer Vision algorithms models for accurate predictions",
+      "Created a user-friendly web interface for easy access"
     ]
   }
 ];

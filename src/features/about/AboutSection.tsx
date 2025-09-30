@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Code, 
-  Brain, 
-  Zap, 
-  Users, 
-  Award, 
-  BookOpen, 
+import {
+  Code,
+  Brain,
+  Zap,
+  Users,
+  Award,
+  BookOpen,
   Coffee,
   MapPin,
   Mail,
@@ -16,40 +16,104 @@ import {
   Calendar,
   GraduationCap,
   Briefcase,
-  Heart
+  Heart,
+  Monitor,
+  Server,
+  Cpu,
+  Wrench,
+  Atom,
+  Database,
+  GitBranch,
+  Layers,
+  Terminal,
+  Box,
+  Globe,
+  FileJson,
+  Bot,
+  Network,
+  HardDrive,
+  Cog,
+  Lock,
+  Cloud
 } from 'lucide-react';
 
 const AboutSection = () => {
   const [activeTab, setActiveTab] = useState('story');
 
   const skills = {
-    "Frontend Development": ["React", "TypeScript", "Tailwind CSS", "Framer Motion"],
-    "Backend Development": ["Python", "Django", "FastAPI", "PostgreSQL", "MongoDB"],
-    "AI/ML": ["PyTorch", "Scikit-learn", "OpenAI API", "LlamaIndex", "Qdrant"],
-    "DevOps & Tools": ["Docker", "Git", "CI/CD", "Linux"]
+    "Frontend Development": {
+      icon: Monitor,
+      skills: [
+        { name: "React", icon: Atom },
+        { name: "TypeScript", icon: FileJson },
+        { name: "Tailwind CSS", icon: Layers },
+        { name: "Framer Motion", icon: Zap }
+      ]
+    },
+    "Backend Development": {
+      icon: Server,
+      skills: [
+        { name: "Python", icon: Bot },
+        { name: "Django", icon: Globe },
+        { name: "FastAPI", icon: Zap },
+        { name: "PostgreSQL", icon: Database },
+        { name: "MongoDB", icon: HardDrive }
+      ]
+    },
+    "AI/ML": {
+      icon: Cpu,
+      skills: [
+        { name: "PyTorch", icon: Brain },
+        { name: "Scikit-learn", icon: Network },
+        { name: "OpenAI API", icon: Cloud },
+        { name: "LlamaIndex", icon: FileJson },
+        { name: "Qdrant", icon: Database }
+      ]
+    },
+    "DevOps & Tools": {
+      icon: Wrench,
+      skills: [
+        { name: "Docker", icon: Box },
+        { name: "Git", icon: GitBranch },
+        { name: "CI/CD", icon: Cog },
+        { name: "Linux", icon: Terminal }
+      ]
+    }
   };
 
   const experiences = [
     {
-      year: "April 2023 - Present",
+      year: "August 2023 - Present",
       title: "Software Engineer",
-      company: "QuickFox Consulting, Bhaktapur, Nepal",
-      description: "Leading initiatives on intelligent document systems and automation solutions for enterprise-grade clients.",
+      company: "QuickFox Consulting, Lalitpur, Nepal",
+      description: "Contributing to the design and development of intelligent document processing and automation systems for enterprise clients. The role emphasizes building scalable backend infrastructure, applying natural language processing (NLP) techniques, and integrating advanced machine learning models to optimize real-world financial and operational workflows.",
       achievements: [
         "Designed and implemented a robust Retrieval-Augmented Generation (RAG) system using FastAPI and LlamaIndex for real-time document QA.",
         "Engineered backend infrastructure to support scalable document ingestion and semantic search workflows.",
         "Automated cheque clearing processes through an intelligent agent-based system, reducing manual effort and operational errors.",
         "Developed a custom Nepali OCR module tailored for cheque data extraction, significantly improving accuracy in technical clearing workflows.",
       ]
+    },
+    {
+      year: "April 2023 - August 2023",
+      title: "Internship",
+      company: "QuickFox Consulting, Lalitpur, Nepal",
+      description: "Worked as part of the research and development team, focusing on automation and intelligent document processing solutions for enterprise clients. The role involved applying machine learning techniques, exploring Robotic Process Automation (RPA), and experimenting with signature verification models to improve document security and reliability.",
+      achievements: [
+        "Contributed to initiatives on intelligent document systems and automation solutions for enterprise clients.",
+        "Gained hands-on experience with Robotic Process Automation (RPA) using Robot Framework.",
+        "Researched signature verification and document OCR techniques.",
+        "Developed a signature verification model leveraging a Siamese Network and implemented a triplet loss function for improved accuracy."
+      ]
     }
   ];
-  
+
 
   const education = [
     {
       degree: "Bachelor's in Science Computer Science and Information Technology",
-      school: "Tribhuvan University",
-      year: "2018",
+      school: "Institute of Science and Technology, Tribhuvan University, Nepal",
+      year: "2018-2023",
       description: "Focused on software development and system design"
     }
   ];
@@ -96,7 +160,7 @@ const AboutSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Passionate software developer with a love for creating intelligent solutions 
+            Passionate software developer with a love for creating intelligent solutions
             and pushing the boundaries of technology.
           </motion.p>
         </motion.div>
@@ -111,7 +175,7 @@ const AboutSection = () => {
           <div className="relative">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl -z-10" />
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center p-12">
               {/* Left - Personal Info */}
               <motion.div variants={itemVariants} className="space-y-8">
@@ -125,10 +189,10 @@ const AboutSection = () => {
                       <p className="text-xl text-orange-600 font-semibold">Software Developer</p>
                     </div>
                   </div>
-                  
+
                   <p className="text-lg text-gray-600 leading-relaxed">
-                    Hello! I'm a passionate software developer based in Bhaktapur, Nepal. 
-                    I specialize in full-stack development with a focus on AI/ML applications, 
+                    Hello! I'm a passionate software developer based in Bhaktapur, Nepal.
+                    I specialize in full-stack development with a focus on AI/ML applications,
                     always striving to create solutions that are both functional and delightful.
                   </p>
                 </div>
@@ -221,11 +285,10 @@ const AboutSection = () => {
               <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-8 py-4 text-white/90 rounded-full font-bold text-lg transition-all duration-200 tracking-wide ${
-                  activeTab === tab.id
+                className={`flex items-center gap-3 px-8 py-4 text-white/90 rounded-full font-bold text-lg transition-all duration-200 tracking-wide ${activeTab === tab.id
                     ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
                     : 'border-2 border-orange-300 text-gray-700 hover:border-orange-400 hover:bg-orange-50'
-                }`}
+                  }`}
                 style={{ letterSpacing: '0.08em' }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -250,28 +313,13 @@ const AboutSection = () => {
                 <h3 className="text-3xl font-black text-gray-900 mb-8 text-center">My Journey</h3>
                 <div className="space-y-6 text-lg text-gray-600 leading-relaxed">
                   <p>
-                    My journey in technology began with a simple curiosity about how things work. 
-                    As a child, I was fascinated by computers and spent countless hours exploring 
-                    their capabilities. This curiosity evolved into a deep passion for creating 
-                    intelligent solutions that make a real difference in people's lives.
+                    I began my career as an intern at <strong>QuickFox Consulting</strong> in April 2023, where I was introduced to intelligent document systems and automation solutions. During this period, I explored <strong>Robotic Process Automation (RPA)</strong>, experimented with document OCR technologies, and developed a <strong>signature verification model</strong> using Siamese Networks with a triplet loss function. This experience gave me a strong foundation in applying machine learning to real-world document processing challenges.
                   </p>
                   <p>
-                    I specialize in full-stack development with a particular focus on AI/ML applications. 
-                    My approach combines technical expertise with creative problem-solving, always 
-                    striving to build solutions that are not just functional, but delightful to use. 
-                    I believe that great software should be both powerful and intuitive.
+                    In August 2023, I transitioned into a <strong>full-time Software Engineer</strong> role at QuickFox Consulting. Since then, I have been leading projects at the intersection of backend engineering and AI-powered automation, including building a <strong>Retrieval-Augmented Generation (RAG) system</strong>, automating <strong>cheque clearing workflows</strong>, and developing a <strong>custom Nepali OCR module</strong> for high-accuracy data extraction. This journey has allowed me to combine my passion for research with practical engineering, delivering impactful solutions for enterprise clients.
                   </p>
                   <p>
-                    When I'm not coding, you'll find me exploring new technologies, contributing to 
-                    open-source projects, or sharing knowledge with the developer community. I believe 
-                    in continuous learning and pushing the boundaries of what's possible with technology. 
-                    Every day brings new challenges and opportunities to grow.
-                  </p>
-                  <p>
-                    I'm passionate about creating technology that serves humanity, whether that's 
-                    through AI applications that solve real-world problems, or intuitive interfaces 
-                    that make complex tasks simple. My goal is to build software that not only works 
-                    flawlessly but also brings joy to its users.
+                    Outside of coding, I enjoy exploring emerging technologies, contributing to open-source projects, and sharing knowledge with the developer community. I believe in <strong>continuous learning</strong> and in pushing the boundaries of what’s possible with technology—every challenge brings new opportunities to grow. </p> <p> I am deeply passionate about creating technology that serves people—whether through <strong>AI applications</strong> that solve real-world problems or intuitive interfaces that make complex tasks simple. My goal is to build software that not only works flawlessly but also delivers meaningful and enjoyable user experiences.
                   </p>
                 </div>
               </div>
@@ -282,26 +330,41 @@ const AboutSection = () => {
             <div className="max-w-6xl mx-auto">
               <div className="bg-white rounded-3xl shadow-lg p-12">
                 <h3 className="text-3xl font-black text-gray-900 mb-12 text-center">Technical Skills</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                  {Object.entries(skills).map(([category, skillList]) => (
-                    <div key={category} className="space-y-4">
-                      <h4 className="text-xl font-bold text-gray-800 border-b-2 border-orange-200 pb-2">
-                        {category}
-                      </h4>
-                      <div className="flex flex-wrap gap-3">
-                        {skillList.map((skill, index) => (
-                          <motion.span
-                            key={skill}
-                            className="px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 font-semibold rounded-full border border-orange-200"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: index * 0.1 }}
-                          >
-                            {skill}
-                          </motion.span>
-                        ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {Object.entries(skills).map(([category, { icon: CategoryIcon, skills: skillList }], categoryIndex) => (
+                    <motion.div
+                      key={category}
+                      className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-100"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: categoryIndex * 0.1 }}
+                      whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                    >
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-orange-500 rounded-xl text-white">
+                          <CategoryIcon size={24} />
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-800">{category}</h4>
                       </div>
-                    </div>
+                      <div className="flex flex-wrap gap-3">
+                        {skillList.map((skill, skillIndex) => {
+                          const SkillIcon = skill.icon;
+                          return (
+                            <motion.span
+                              key={skill.name}
+                              className="px-4 py-2 bg-white text-orange-700 font-semibold rounded-full border border-orange-200 shadow-sm flex items-center gap-2"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: categoryIndex * 0.1 + skillIndex * 0.05 }}
+                              whileHover={{ scale: 1.05, backgroundColor: "#fff7ed" }}
+                            >
+                              <SkillIcon size={16} />
+                              {skill.name}
+                            </motion.span>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -323,10 +386,10 @@ const AboutSection = () => {
                     >
                       {/* Timeline Line */}
                       <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-red-500" />
-                      
+
                       {/* Timeline Dot */}
                       <div className="absolute left-6 top-4 w-4 h-4 bg-orange-500 rounded-full border-4 border-white shadow-lg" />
-                      
+
                       <div className="ml-16">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                           <h4 className="text-2xl font-bold text-gray-900">{exp.title}</h4>
@@ -365,10 +428,10 @@ const AboutSection = () => {
                     >
                       {/* Timeline Line */}
                       <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-red-500" />
-                      
+
                       {/* Timeline Dot */}
                       <div className="absolute left-6 top-4 w-4 h-4 bg-orange-500 rounded-full border-4 border-white shadow-lg" />
-                      
+
                       <div className="ml-16">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                           <h4 className="text-2xl font-bold text-gray-900">{edu.degree}</h4>
