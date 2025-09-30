@@ -30,7 +30,7 @@ const ProfileImage = () => (
       {/* Profile image placeholder */}
       <div className="absolute inset-4 rounded-full bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center shadow-2xl overflow-hidden">
         <OptimizedImage 
-          src="/assets/image_me.png" 
+          src="assets/image_me.png" 
           alt="Saurab Shrestha" 
           className="w-full h-full object-cover"
           lazy={false}

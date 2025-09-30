@@ -15,7 +15,7 @@ const Placeholder = ({ title }: { title: string }) => (
 
 const App: React.FC = () => {
   return (
-    <Router basename="/SaurabShrestha">
+    <Router basename="/saurabshrestha">
       <MainLayout>
         <Routes>
           <Route path="/" element={<Home />} />
