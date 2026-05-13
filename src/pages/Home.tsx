@@ -1,18 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import HeroSection from '../features/home/HeroSection';
-import FeaturedProjects from '../features/home/FeaturedProjects';
-import AboutPreview from '../features/home/AboutPreview';
-import ContactForm from '../features/home/ContactForm';
+import AboutSection from '../features/home/AboutSection';
+import JourneyTimeline from '../features/home/JourneyTimeline';
+import ProjectsSection from '../features/home/ProjectsSection';
+import BlogSection from '../features/home/BlogSection';
+import ContactSection from '../features/home/ContactSection';
 
 const Home: React.FC = () => {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .tl-item').forEach(el => io.observe(el));
+
+    if (hash) {
+      const el = document.querySelector(hash);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+
+    return () => io.disconnect();
+  }, [hash]);
+
   return (
-    <main>
+    <>
+      <div className="app-bloom app-bloom-warm" />
+      <div className="app-bloom app-bloom-cool" />
       <HeroSection />
-      <AboutPreview />
-      <FeaturedProjects />
-      <ContactForm />
-    </main>
+      <div id="about">
+        <AboutSection />
+      </div>
+      <JourneyTimeline />
+      <ProjectsSection />
+      <BlogSection />
+      <div id="contact">
+        <ContactSection />
+      </div>
+    </>
   );
 };
 
-export default Home; 
+export default Home;

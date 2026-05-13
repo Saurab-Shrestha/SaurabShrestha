@@ -1,30 +1,39 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import Home from './pages/Home';
-import Work from './pages/Work';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Resume from './pages/Resume';
+import SkeletonLoader from './components/SkeletonLoader';
 
-const Placeholder = ({ title }: { title: string }) => (
-  <div className="min-h-[60vh] flex flex-col items-center justify-center text-3xl font-bold text-gray-400">
-    {title} (Coming Soon)
-  </div>
-);
+const Home = lazy(() => import('./pages/Home'));
+const Work = lazy(() => import('./pages/Work'));
+const Blog = lazy(() => import('./pages/Blog'));
+const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+
+const ResumeRedirect: React.FC = () => {
+  React.useEffect(() => {
+    window.location.href = '/assets/Saurab-Shrestha-CV.pdf';
+  }, []);
+  return null;
+};
 
 const App: React.FC = () => {
   return (
-    <Router basename="/SaurabShrestha">
+    <Router>
       <MainLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/work" element={<Work />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/resume" element={<Resume />} />
-          <Route path="/blog" element={<Placeholder title="Blog" />} />
-        </Routes>
+        <Suspense fallback={
+          <div className="pt-32 pb-24 px-4 container mx-auto max-w-5xl">
+             <SkeletonLoader type="card" count={2} />
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/work" element={<Work />} />
+            <Route path="/work/:id" element={<ProjectDetail />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/resume" element={<ResumeRedirect />} />
+          </Routes>
+        </Suspense>
       </MainLayout>
     </Router>
   );

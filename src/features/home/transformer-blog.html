@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Transformers — A Deep Dive</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/night-owl.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --ink: #0f0e0d;
+            --paper: #faf7f2;
+            --paper-mid: #f0ebe0;
+            --accent: #c0392b;
+            --accent2: #2c3e6b;
+            --accent3: #e67e22;
+            --code-bg: #011627;
+            --rule: #ccc5b5;
+            --margin-note: #7a6f5e;
+            --serif: 'Source Serif 4', Georgia, serif;
+            --display: 'Playfair Display', Georgia, serif;
+            --mono: 'IBM Plex Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--serif);
+            font-size: 18px;
+            line-height: 1.75;
+        }
+
+        /* ── HEADER ── */
+        .masthead {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 80px 40px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .masthead::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg,
+                    transparent, transparent 40px,
+                    rgba(255, 255, 255, .03) 40px,
+                    rgba(255, 255, 255, .03) 41px);
+        }
+
+        .masthead-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--accent3);
+            margin-bottom: 20px;
+        }
+
+        .masthead h1 {
+            font-family: var(--display);
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -.02em;
+            max-width: 900px;
+            margin: 0 auto 28px;
+        }
+
+        .masthead h1 em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .masthead-sub {
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            color: rgba(250, 247, 242, .65);
+            max-width: 560px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .masthead-meta {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .12em;
+            color: rgba(255, 255, 255, .35);
+            text-transform: uppercase;
+        }
+
+        .masthead-meta span {
+            margin: 0 12px;
+        }
+
+        /* ── TOC ── */
+        .toc-wrap {
+            background: var(--paper-mid);
+            border-top: 3px solid var(--ink);
+            border-bottom: 1px solid var(--rule);
+            padding: 36px 40px;
+        }
+
+        .toc-inner {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        .toc-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--margin-note);
+            margin-bottom: 18px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 8px 24px;
+        }
+
+        .toc-grid a {
+            font-family: var(--mono);
+            font-size: .82rem;
+            color: var(--accent2);
+            text-decoration: none;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            transition: color .15s;
+        }
+
+        .toc-grid a:hover {
+            color: var(--accent);
+        }
+
+        .toc-num {
+            font-size: .7rem;
+            color: var(--rule);
+            min-width: 22px;
+        }
+
+        /* ── LAYOUT ── */
+        .article {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 0 40px 100px;
+        }
+
+        /* ── SECTIONS ── */
+        .section {
+            padding: 64px 0 0;
+            border-top: 1px solid var(--rule);
+            margin-top: 64px;
+        }
+
+        .section:first-child {
+            border-top: none;
+            margin-top: 40px;
+        }
+
+        .section-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--margin-note);
+            margin-bottom: 10px;
+        }
+
+        .section h2 {
+            font-family: var(--display);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1.18;
+            letter-spacing: -.01em;
+            margin-bottom: 28px;
+        }
+
+        .section h3 {
+            font-family: var(--display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 44px 0 16px;
+            padding-left: 16px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .section p {
+            margin-bottom: 20px;
+            color: #2a2520;
+        }
+
+        /* ── CALLOUT ── */
+        .callout {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 28px 32px;
+            margin: 36px 0;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .callout::before {
+            content: '★';
+            position: absolute;
+            top: -1px;
+            left: 32px;
+            font-size: .6rem;
+            background: var(--accent);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 0 0 3px 3px;
+            letter-spacing: .1em;
+            font-family: var(--mono);
+        }
+
+        .callout p {
+            color: rgba(250, 247, 242, .82);
+            margin-bottom: 0;
+        }
+
+        .callout strong {
+            color: var(--accent3);
+        }
+
+        /* ── FORMULA BOX ── */
+        .formula-box {
+            background: var(--paper-mid);
+            border: 1px solid var(--rule);
+            border-left: 4px solid var(--accent2);
+            padding: 22px 28px;
+            margin: 28px 0;
+            font-family: var(--mono);
+            font-size: .95rem;
+            overflow-x: auto;
+        }
+
+        .formula-box .formula-label {
+            font-size: .7rem;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--margin-note);
+            margin-bottom: 10px;
+        }
+
+        .formula-box .formula {
+            font-size: 1.1rem;
+            color: var(--accent2);
+            font-weight: 500;
+        }
+
+        .formula-box .formula-note {
+            font-size: .78rem;
+            color: var(--margin-note);
+            margin-top: 10px;
+            font-style: italic;
+            font-family: var(--serif);
+        }
+
+        /* ── STEP CARDS ── */
+        .steps {
+            display: grid;
+            gap: 1px;
+            background: var(--rule);
+            border: 1px solid var(--rule);
+            margin: 32px 0;
+        }
+
+        .step {
+            background: var(--paper);
+            display: grid;
+            grid-template-columns: 52px 1fr;
+            gap: 0;
+        }
+
+        .step-num {
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--display);
+            font-size: 1.2rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-content {
+            padding: 18px 22px;
+        }
+
+        .step-title {
+            font-family: var(--mono);
+            font-size: .78rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 6px;
+        }
+
+        .step-desc {
+            font-size: .9rem;
+            color: #3a3228;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ── CODE BLOCKS ── */
+        .code-wrap {
+            margin: 36px 0;
+            border: 1px solid #1a2a3a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #0a1628;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-title {
+            font-family: var(--mono);
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .45);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .code-lang {
+            font-family: var(--mono);
+            font-size: .68rem;
+            background: var(--accent2);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 2px;
+            letter-spacing: .05em;
+        }
+
+        pre {
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        pre code {
+            font-family: var(--mono) !important;
+            font-size: .8rem !important;
+            line-height: 1.65 !important;
+        }
+
+        /* ── DIAGRAM ── */
+        .diagram-wrap {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .diagram-caption {
+            font-family: var(--mono);
+            font-size: .72rem;
+            color: var(--margin-note);
+            margin-top: 14px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        /* ── COMPONENT GRID ── */
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .component-card {
+            border: 1px solid var(--rule);
+            padding: 20px;
+            background: white;
+        }
+
+        .component-card .icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .component-card h4 {
+            font-family: var(--mono);
+            font-size: .75rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 8px;
+        }
+
+        .component-card p {
+            font-size: .82rem;
+            color: var(--margin-note);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* ── COMPARISON TABLE ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 28px 0;
+            font-size: .88rem;
+        }
+
+        th {
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--mono);
+            font-size: .7rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--rule);
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background: var(--paper-mid);
+        }
+
+        /* ── PULL QUOTE ── */
+        .pull-quote {
+            border-left: none;
+            border-top: 2px solid var(--ink);
+            border-bottom: 2px solid var(--ink);
+            margin: 48px 0;
+            padding: 28px 0;
+            text-align: center;
+        }
+
+        .pull-quote p {
+            font-family: var(--display);
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.4;
+            color: var(--ink);
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .pull-quote cite {
+            display: block;
+            font-family: var(--mono);
+            font-size: .72rem;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--margin-note);
+            margin-top: 16px;
+            font-style: normal;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--ink);
+            color: rgba(250, 247, 242, .4);
+            text-align: center;
+            padding: 40px;
+            font-family: var(--mono);
+            font-size: .72rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeUp .5s ease both;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+        <div class="masthead-label">Deep Learning · NLP · From Scratch</div>
+        <h1>Understanding <em>Transformers</em></h1>
+        <p class="masthead-sub">A complete step-by-step guide to the architecture that changed everything in AI</p>
+        <div class="masthead-meta">
+            <span>Based on "Attention Is All You Need" — Vaswani et al., 2017</span>
+            <span>·</span>
+            <span>PyTorch Implementation</span>
+        </div>
+    </header>
+
+    <!-- TABLE OF CONTENTS -->
+    <nav class="toc-wrap">
+        <div class="toc-inner">
+            <div class="toc-title">Contents</div>
+            <div class="toc-grid">
+                <a href="#intro"><span class="toc-num">01</span> Introduction</a>
+                <a href="#why"><span class="toc-num">02</span> Why Transformers?</a>
+                <a href="#overview"><span class="toc-num">03</span> Architecture Overview</a>
+                <a href="#embedding"><span class="toc-num">04</span> Token Embedding</a>
+                <a href="#positional"><span class="toc-num">05</span> Positional Encoding</a>
+                <a href="#attention"><span class="toc-num">06</span> Multi-Head Attention</a>
+                <a href="#ffn"><span class="toc-num">07</span> Feed-Forward Network</a>
+                <a href="#encoder"><span class="toc-num">08</span> Encoder Layer</a>
+                <a href="#decoder"><span class="toc-num">09</span> Decoder Layer</a>
+                <a href="#full"><span class="toc-num">10</span> Full Transformer</a>
+            </div>
+        </div>
+    </nav>
+
+    <article class="article">
+
+        <!-- SECTION 1: INTRO -->
+        <section class="section" id="intro">
+            <div class="section-label">Section 01</div>
+            <h2>Introduction</h2>
+            <p>
+                In 2017, a team at Google published a paper titled <em>"Attention Is All You Need"</em>, introducing the
+                <strong>Transformer</strong> — a neural network architecture that would go on to become the backbone of
+                modern AI. GPT, BERT, T5, LLaMA — they all trace their lineage back to this single paper.
+            </p>
+            <p>
+                The key insight was radical: instead of processing sequences step-by-step using recurrent networks, why
+                not let every token attend to every other token simultaneously? This simple idea —
+                <strong>self-attention</strong> — unlocked parallelism, improved long-range reasoning, and enabled the
+                scaling of models to billions of parameters.
+            </p>
+
+            <div class="pull-quote">
+                <p>"We propose a new simple network architecture, the Transformer, based solely on attention mechanisms,
+                    dispensing with recurrence and convolutions entirely."</p>
+                <cite>— Vaswani et al., Attention Is All You Need, 2017</cite>
+            </div>
+        </section>
+
+        <!-- SECTION 2: WHY -->
+        <section class="section" id="why">
+            <div class="section-label">Section 02</div>
+            <h2>Why Transformers?</h2>
+            <p>To understand why transformers matter, we need to appreciate what came before them.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>How it works</th>
+                        <th>Problem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RNN</strong></td>
+                        <td>Processes tokens one at a time, left to right, passing a hidden state forward</td>
+                        <td>Sequential → slow. Struggles with long-range dependencies due to vanishing gradients.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LSTM</strong></td>
+                        <td>Same as RNN but with gating mechanisms to better preserve long-range context</td>
+                        <td>Still sequential. Still slow for long sequences. Complex to train.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transformer</strong></td>
+                        <td>All tokens processed in parallel. Every token attends to all others.</td>
+                        <td>Large memory usage for very long sequences, but otherwise highly scalable.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout">
+                <p><strong>The core advantage:</strong> Transformers process an entire sequence <em>at once</em>, not
+                    token-by-token. During training, this means massive GPU parallelism. During inference, it means each
+                    token can directly "see" any other token, regardless of distance.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: OVERVIEW -->
+        <section class="section" id="overview">
+            <div class="section-label">Section 03</div>
+            <h2>Architecture Overview</h2>
+            <p>The Transformer is built from two main stacks: an <strong>Encoder</strong> and a
+                <strong>Decoder</strong>. Each stack is composed of identical layers stacked on top of each other
+                (typically 6).
+            </p>
+
+            <!-- Architecture diagram as SVG -->
+            <div class="diagram-wrap">
+                <svg viewBox="0 0 700 460" xmlns="http://www.w3.org/2000/svg"
+                    style="max-width:100%;font-family:'IBM Plex Mono',monospace;">
+                    <defs>
+                        <marker id="arr" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#0f0e0d" />
+                        </marker>
+                    </defs>
+                    <!-- Encoder column -->
+                    <rect x="40" y="30" width="260" height="400" rx="4" fill="#f0ebe0" stroke="#ccc5b5"
+                        stroke-width="1.5" />
+                    <text x="170" y="20" text-anchor="middle" fill="#7a6f5e" font-size="10"
+                        letter-spacing="2">ENCODER</text>
+                    <!-- Encoder blocks -->
+                    <rect x="60" y="50" width="220" height="44" rx="2" fill="#2c3e6b" />
+                    <text x="170" y="77" text-anchor="middle" fill="white" font-size="11">Feed-Forward Network</text>
+                    <rect x="60" y="108" width="220" height="44" rx="2" fill="#2c3e6b" />
+                    <text x="170" y="135" text-anchor="middle" fill="white" font-size="11">Add &amp; Norm</text>
+                    <rect x="60" y="166" width="220" height="44" rx="2" fill="#c0392b" />
+                    <text x="170" y="193" text-anchor="middle" fill="white" font-size="11">Multi-Head
+                        Self-Attention</text>
+                    <rect x="60" y="224" width="220" height="44" rx="2" fill="#2c3e6b" />
+                    <text x="170" y="251" text-anchor="middle" fill="white" font-size="11">Add &amp; Norm</text>
+                    <rect x="60" y="282" width="220" height="44" rx="2" fill="#e67e22" opacity=".9" />
+                    <text x="170" y="309" text-anchor="middle" fill="white" font-size="11">Positional Encoding</text>
+                    <rect x="60" y="340" width="220" height="44" rx="2" fill="#e67e22" opacity=".9" />
+                    <text x="170" y="367" text-anchor="middle" fill="white" font-size="11">Input Embeddings</text>
+                    <text x="170" y="418" text-anchor="middle" fill="#7a6f5e" font-size="10">INPUT TOKENS</text>
+
+                    <!-- Decoder column -->
+                    <rect x="400" y="30" width="260" height="400" rx="4" fill="#f0ebe0" stroke="#ccc5b5"
+                        stroke-width="1.5" />
+                    <text x="530" y="20" text-anchor="middle" fill="#7a6f5e" font-size="10"
+                        letter-spacing="2">DECODER</text>
+                    <rect x="420" y="50" width="220" height="44" rx="2" fill="#2c3e6b" />
+                    <text x="530" y="70" text-anchor="middle" fill="white" font-size="11">Linear + Softmax</text>
+                    <text x="530" y="84" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9">Output
+                        Probabilities</text>
+                    <rect x="420" y="108" width="220" height="44" rx="2" fill="#2c3e6b" />
+                    <text x="530" y="135" text-anchor="middle" fill="white" font-size="11">Feed-Forward Network</text>
+                    <rect x="420" y="166" width="220" height="44" rx="2" fill="#c0392b" />
+                    <text x="530" y="186" text-anchor="middle" fill="white" font-size="11">Cross-Attention</text>
+                    <text x="530" y="200" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="9">(attends to
+                        encoder output)</text>
+                    <rect x="420" y="224" width="220" height="44" rx="2" fill="#c0392b" />
+                    <text x="530" y="244" text-anchor="middle" fill="white" font-size="11">Masked Self-Attention</text>
+                    <text x="530" y="258" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="9">(causal
+                        mask)</text>
+                    <rect x="420" y="282" width="220" height="44" rx="2" fill="#e67e22" opacity=".9" />
+                    <text x="530" y="309" text-anchor="middle" fill="white" font-size="11">Positional Encoding</text>
+                    <rect x="420" y="340" width="220" height="44" rx="2" fill="#e67e22" opacity=".9" />
+                    <text x="530" y="367" text-anchor="middle" fill="white" font-size="11">Output Embeddings</text>
+                    <text x="530" y="418" text-anchor="middle" fill="#7a6f5e" font-size="10">OUTPUT TOKENS (shifted
+                        right)</text>
+
+                    <!-- Cross arrow -->
+                    <line x1="280" y1="188" x2="418" y2="188" stroke="#0f0e0d" stroke-width="1.5" marker-end="url(#arr)"
+                        stroke-dasharray="6,4" />
+                    <text x="350" y="181" text-anchor="middle" fill="#7a6f5e" font-size="9">encoder output</text>
+                </svg>
+                <div class="diagram-caption">Fig. 1 — Transformer encoder–decoder architecture</div>
+            </div>
+
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="icon">🔡</div>
+                    <h4>Embeddings</h4>
+                    <p>Convert integer token IDs into dense continuous vectors.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">📍</div>
+                    <h4>Positional Encoding</h4>
+                    <p>Injects sequence order information using sinusoidal functions.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">👁️</div>
+                    <h4>Self-Attention</h4>
+                    <p>Each token computes how much to attend to every other token.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">⚡</div>
+                    <h4>Feed-Forward</h4>
+                    <p>Position-wise non-linear transformation applied independently.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">⚖️</div>
+                    <h4>Layer Norm</h4>
+                    <p>Normalizes activations after each sub-layer for stable training.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">🔀</div>
+                    <h4>Cross-Attention</h4>
+                    <p>Decoder attends to encoder output to align input and output.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: EMBEDDING -->
+        <section class="section" id="embedding">
+            <div class="section-label">Section 04</div>
+            <h2>Step 1 — Token Embedding</h2>
+            <p>
+                Before a neural network can process text, we need to convert words (or subword tokens) into vectors of
+                numbers. An <strong>embedding layer</strong> is simply a lookup table: each token ID maps to a learned
+                vector of size <code>embed_dim</code>.
+            </p>
+            <p>
+                In the original paper, the model dimension is <code>d_model = 512</code>, meaning each token becomes a
+                512-dimensional vector. These embeddings are <em>learned</em> during training — the model discovers what
+                geometric relationships between vectors best help it solve the task.
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Tokenize</div>
+                        <p class="step-desc">Text is split into tokens (words, subwords, or characters) and converted to
+                            integer IDs using a vocabulary.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Lookup</div>
+                        <p class="step-desc">Each integer ID indexes into an embedding matrix of shape
+                            <code>[vocab_size × d_model]</code>, retrieving its row.
+                        </p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Output</div>
+                        <p class="step-desc">A sequence of <em>n</em> tokens becomes a matrix of shape
+                            <code>[n × d_model]</code>, ready for the transformer layers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Embedding Class</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class Embedding(nn.Module):
+    def __init__(self, vocab_size, embed_dim):
+        """
+        vocab_size : total number of unique tokens in vocabulary
+        embed_dim  : dimension of each token's vector (d_model)
+        """
+        super(Embedding, self).__init__()
+        # nn.Embedding is a learnable lookup table
+        self.embed = nn.Embedding(vocab_size, embed_dim)
+
+    def forward(self, x):
+        """
+        x   : LongTensor of shape [batch_size, seq_length]
+               containing token IDs
+        out : FloatTensor of shape [batch_size, seq_length, embed_dim]
+        """
+        out = self.embed(x)
+        return out</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 5: POSITIONAL ENCODING -->
+        <section class="section" id="positional">
+            <div class="section-label">Section 05</div>
+            <h2>Step 2 — Positional Encoding</h2>
+            <p>
+                Self-attention is <strong>permutation-invariant</strong> — it doesn't care about the order of tokens by
+                default. If you shuffle all words in a sentence, the attention mechanism would produce the same output
+                (modulo the shuffled positions). This is clearly a problem.
+            </p>
+            <p>
+                The solution is <strong>positional encoding</strong>: we add a unique signal to each token's embedding
+                that encodes its position in the sequence. The original Transformer uses sinusoidal functions, which
+                have a useful property — they generalize to sequence lengths unseen during training.
+            </p>
+
+            <div class="formula-box">
+                <div class="formula-label">Positional Encoding Formulas</div>
+                <div class="formula">
+                    PE(pos, 2i) = sin(pos / 10000^(2i/d_model))<br>
+                    PE(pos, 2i + 1) = cos(pos / 10000^(2i/d_model))
+                </div>
+                <div class="formula-note">Where <em>pos</em> is the position in the sequence and <em>i</em> is the
+                    dimension index. Even dimensions use sin, odd dimensions use cos.</div>
+            </div>
+
+            <p>
+                Why does this work? Each position gets a unique pattern of sine and cosine waves at different
+                frequencies. The model can learn to use these signals to determine relative distances between tokens —
+                e.g., "this word is 3 positions after that word."
+            </p>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Positional Encoding</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class PositionalEncoding(nn.Module):
+    def __init__(self, d_model, max_seq_length):
+        super(PositionalEncoding, self).__init__()
+
+        # Create a matrix of shape [max_seq_length, d_model]
+        pe = torch.zeros(max_seq_length, d_model)
+
+        # position: column vector [0, 1, 2, ..., max_seq_length-1]
+        position = torch.arange(0, max_seq_length, dtype=torch.float).unsqueeze(1)
+
+        # div_term: the 1/10000^(2i/d_model) frequency scaling factors
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model)
+        )
+
+        # Apply sin to even dimensions, cos to odd dimensions
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+
+        # Store as non-trainable buffer; add batch dim: [1, max_seq_length, d_model]
+        self.register_buffer('pe', pe.unsqueeze(0))
+
+    def forward(self, x):
+        # Add positional encoding to embedding.
+        # x shape: [batch_size, seq_length, d_model]
+        return x + self.pe[:, :x.size(1)]</code></pre>
+            </div>
+
+            <div class="callout">
+                <p><strong>Key insight:</strong> We <em>add</em> positional encodings to embeddings — they occupy the
+                    same vector space. The model learns to disentangle meaning (from the embedding) and position (from
+                    the encoding) jointly. The encodings are <strong>fixed</strong>, not learned, so they're always
+                    consistent.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: ATTENTION -->
+        <section class="section" id="attention">
+            <div class="section-label">Section 06</div>
+            <h2>Step 3 — Multi-Head Attention</h2>
+            <p>
+                This is the heart of the Transformer. The attention mechanism allows each token to gather information
+                from every other token in the sequence, weighted by relevance. The "multi-head" variant runs several
+                attention operations in parallel, allowing the model to attend to different types of relationships
+                simultaneously.
+            </p>
+
+            <h3>Scaled Dot-Product Attention</h3>
+            <p>Each token is projected into three roles: a <strong>Query</strong> (what am I looking for?), a
+                <strong>Key</strong> (what do I offer?), and a <strong>Value</strong> (what information do I carry?).
+            </p>
+
+            <div class="formula-box">
+                <div class="formula-label">Attention Formula</div>
+                <div class="formula">Attention(Q, K, V) = softmax( QKᵀ / √d_k ) · V</div>
+                <div class="formula-note">Q = queries, K = keys, V = values, d_k = head dimension. The √d_k scaling
+                    prevents the dot products from getting too large, which would push softmax into regions with
+                    near-zero gradients.</div>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Project Q, K, V</div>
+                        <p class="step-desc">Linear layers <code>W_q</code>, <code>W_k</code>, <code>W_v</code> project
+                            the input into Query, Key, and Value matrices.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Compute Attention Scores</div>
+                        <p class="step-desc">Dot product of Q and Kᵀ gives raw scores. Divide by √d_k to scale. Apply
+                            causal mask if in decoder.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Softmax → Weights</div>
+                        <p class="step-desc">Softmax converts scores to probabilities (attention weights) that sum to 1
+                            over all positions.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Weighted Sum of Values</div>
+                        <p class="step-desc">Multiply weights by V to produce the output: a weighted blend of all
+                            values, biased toward the most relevant ones.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Multi-Head & Combine</div>
+                        <p class="step-desc">Run <em>h</em> attention heads in parallel on lower-dimensional
+                            projections, then concatenate and project back with <code>W_o</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Multi-Head Attention</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, num_heads):
+        super(MultiHeadAttention, self).__init__()
+        assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+
+        self.d_model    = d_model
+        self.num_heads  = num_heads
+        self.d_k        = d_model // num_heads  # each head operates on d_k dims
+
+        # Input projections for Q, K, V and the output projection
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        self.W_o = nn.Linear(d_model, d_model)
+
+    def scaled_dot_product_attention(self, Q, K, V, mask=None):
+        # QKᵀ / √d_k  →  shape: [batch, heads, seq, seq]
+        attn_scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+
+        # Mask: fill -1e9 (≈ -∞) before softmax so those positions get ~0 weight
+        if mask is not None:
+            attn_scores = attn_scores.masked_fill(mask == 0, -1e9)
+
+        attn_probs = torch.softmax(attn_scores, dim=-1)
+        return torch.matmul(attn_probs, V)
+
+    def split_heads(self, x):
+        # [batch, seq, d_model] → [batch, heads, seq, d_k]
+        batch_size, seq_length, d_model = x.size()
+        return x.view(batch_size, seq_length, self.num_heads, self.d_k).transpose(1, 2)
+
+    def combine_heads(self, x):
+        # [batch, heads, seq, d_k] → [batch, seq, d_model]
+        batch_size, _, seq_length, d_k = x.size()
+        return x.transpose(1, 2).contiguous().view(batch_size, seq_length, self.d_model)
+
+    def forward(self, Q, K, V, mask=None):
+        # Project and split across heads
+        Q = self.split_heads(self.W_q(Q))
+        K = self.split_heads(self.W_k(K))
+        V = self.split_heads(self.W_v(V))
+
+        # Compute attention for all heads in parallel
+        attn_output = self.scaled_dot_product_attention(Q, K, V, mask)
+
+        # Combine heads and apply output projection
+        return self.W_o(self.combine_heads(attn_output))</code></pre>
+            </div>
+
+            <div class="callout">
+                <p><strong>Why multiple heads?</strong> Different heads can learn to specialize — one might attend to
+                    syntactic relationships, another to coreference, another to semantic similarity. With <strong>8
+                        heads</strong> and <code>d_model = 512</code>, each head operates on 64 dimensions, but
+                    collectively they capture a rich, multi-faceted view of the sequence.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: FFN -->
+        <section class="section" id="ffn">
+            <div class="section-label">Section 07</div>
+            <h2>Step 4 — Position-Wise Feed-Forward Network</h2>
+            <p>
+                After attention aggregates information across positions, a <strong>feed-forward network (FFN)</strong>
+                is applied to each position independently. This is a simple two-layer MLP with a ReLU activation in the
+                middle.
+            </p>
+            <p>
+                Think of attention as the "communication" step (tokens talk to each other), and the FFN as the
+                "computation" step (each token individually processes what it learned). The inner dimension
+                <code>d_ff</code> is typically <strong>4× the model dimension</strong> (e.g., 2048 when
+                <code>d_model = 512</code>), giving the model extra capacity.
+            </p>
+
+            <div class="formula-box">
+                <div class="formula-label">FFN Formula</div>
+                <div class="formula">FFN(x) = max(0, x·W₁ + b₁)·W₂ + b₂</div>
+                <div class="formula-note">Two linear transformations with a ReLU activation between them. Applied
+                    identically to each position.</div>
+            </div>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Position-Wise Feed-Forward Network</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class PositionWiseFeedForward(nn.Module):
+    def __init__(self, d_model, d_ff):
+        """
+        d_model : model dimension (e.g. 512)
+        d_ff    : inner dimension, typically 4 × d_model (e.g. 2048)
+        """
+        super(PositionWiseFeedForward, self).__init__()
+        self.fc1  = nn.Linear(d_model, d_ff)   # expand
+        self.fc2  = nn.Linear(d_ff, d_model)   # contract
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        # x: [batch, seq, d_model]
+        # Expand → activate → contract
+        return self.fc2(self.relu(self.fc1(x)))</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 8: ENCODER LAYER -->
+        <section class="section" id="encoder">
+            <div class="section-label">Section 08</div>
+            <h2>Step 5 — Encoder Layer</h2>
+            <p>
+                A single encoder layer combines Multi-Head Self-Attention and the Feed-Forward Network, each wrapped
+                with a <strong>residual connection</strong> and <strong>layer normalization</strong>. This "Add &amp;
+                Norm" pattern is critical for training stability in deep networks.
+            </p>
+            <p>
+                The encoder receives the full source sequence and produces a rich contextual representation for each
+                token. These representations are then passed to the decoder via cross-attention.
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Self-Attention</div>
+                        <p class="step-desc">Each token attends to all tokens in the input (including itself). The
+                            padding mask ensures PAD tokens don't influence results.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Add &amp; Norm</div>
+                        <p class="step-desc">The attention output is added to the original input (residual), then
+                            layer-normalized. Residuals enable gradient flow through deep stacks.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Feed-Forward</div>
+                        <p class="step-desc">The normalized output goes through the position-wise FFN for further
+                            non-linear transformation.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Add &amp; Norm (again)</div>
+                        <p class="step-desc">Another residual connection + layer norm after the FFN. Output shape
+                            matches input: <code>[batch, seq, d_model]</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Encoder Layer</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class EncoderLayer(nn.Module):
+    def __init__(self, d_model, num_heads, d_ff, dropout):
+        super(EncoderLayer, self).__init__()
+        self.self_attn    = MultiHeadAttention(d_model, num_heads)
+        self.feed_forward = PositionWiseFeedForward(d_model, d_ff)
+        self.norm1        = nn.LayerNorm(d_model)
+        self.norm2        = nn.LayerNorm(d_model)
+        self.dropout      = nn.Dropout(dropout)
+
+    def forward(self, x, mask):
+        # --- Sub-layer 1: Self-Attention ---
+        attn_output = self.self_attn(x, x, x, mask)          # Q=K=V=x (self-attention)
+        x = self.norm1(x + self.dropout(attn_output))         # residual + norm
+
+        # --- Sub-layer 2: Feed-Forward ---
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + self.dropout(ff_output))           # residual + norm
+
+        return x  # shape: [batch, seq, d_model]</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 9: DECODER LAYER -->
+        <section class="section" id="decoder">
+            <div class="section-label">Section 09</div>
+            <h2>Step 6 — Decoder Layer</h2>
+            <p>
+                The decoder is where generation happens. It takes the target sequence so far and uses it — combined with
+                the encoder's output — to predict the next token. It has <strong>three</strong> sub-layers instead of
+                two:
+            </p>
+
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="icon">🎭</div>
+                    <h4>Masked Self-Attention</h4>
+                    <p>Like encoder self-attention, but with a <em>causal mask</em> — each token can only attend to
+                        itself and earlier tokens. Prevents "cheating" by looking at future tokens.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">🔗</div>
+                    <h4>Cross-Attention</h4>
+                    <p>Queries come from the decoder, but Keys and Values come from the encoder output. This is how the
+                        decoder "looks at" the source sequence.</p>
+                </div>
+                <div class="component-card">
+                    <div class="icon">⚡</div>
+                    <h4>Feed-Forward</h4>
+                    <p>Same as the encoder — independent position-wise MLP for added model capacity.</p>
+                </div>
+            </div>
+
+            <div class="callout">
+                <p><strong>The causal mask</strong> is an upper-triangular matrix of −∞ values. When added to attention
+                    scores before softmax, positions in the future get zero weight. This enforces <strong>autoregressive
+                        generation</strong>: the model generates tokens one at a time, only conditioning on what it has
+                    already produced.</p>
+            </div>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Decoder Layer</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class DecoderLayer(nn.Module):
+    def __init__(self, d_model, num_heads, d_ff, dropout):
+        super(DecoderLayer, self).__init__()
+        self.self_attn    = MultiHeadAttention(d_model, num_heads)  # masked
+        self.cross_attn   = MultiHeadAttention(d_model, num_heads)  # cross
+        self.feed_forward = PositionWiseFeedForward(d_model, d_ff)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.norm3 = nn.LayerNorm(d_model)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x, enc_output, src_mask, tgt_mask):
+        # --- Sub-layer 1: Masked Self-Attention (causal) ---
+        attn_output = self.self_attn(x, x, x, tgt_mask)
+        x = self.norm1(x + self.dropout(attn_output))
+
+        # --- Sub-layer 2: Cross-Attention ---
+        # Q = decoder state, K = V = encoder output
+        attn_output = self.cross_attn(x, enc_output, enc_output, src_mask)
+        x = self.norm2(x + self.dropout(attn_output))
+
+        # --- Sub-layer 3: Feed-Forward ---
+        ff_output = self.feed_forward(x)
+        x = self.norm3(x + self.dropout(ff_output))
+
+        return x</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 10: FULL TRANSFORMER -->
+        <section class="section" id="full">
+            <div class="section-label">Section 10</div>
+            <h2>Step 7 — Putting It All Together</h2>
+            <p>
+                The full <code>Transformer</code> class assembles all the components: source and target embeddings,
+                positional encodings, a stack of encoder layers, a stack of decoder layers, and a final linear + softmax
+                head to produce output probabilities.
+            </p>
+
+            <h3>Mask Generation</h3>
+            <p>Before the forward pass, two masks are created:</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">①</div>
+                    <div class="step-content">
+                        <div class="step-title">Source mask (padding mask)</div>
+                        <p class="step-desc">Marks which source positions are real tokens (1) vs padding (0), so padding
+                            tokens are ignored during attention.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">②</div>
+                    <div class="step-content">
+                        <div class="step-title">Target mask (causal + padding)</div>
+                        <p class="step-desc">Combines a padding mask with the causal "no-peak" mask to prevent attending
+                            to future target tokens.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Full Transformer</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python">class Transformer(nn.Module):
+    def __init__(self, src_vocab_size, tgt_vocab_size,
+                 d_model, num_heads, num_layers,
+                 d_ff, max_seq_length, dropout):
+        super(Transformer, self).__init__()
+
+        # ── Embeddings (separate for source and target) ──────────────────────
+        self.encoder_embedding = Embedding(src_vocab_size, d_model)
+        self.decoder_embedding = Embedding(tgt_vocab_size, d_model)
+        self.positional_encoding = PositionalEncoding(d_model, max_seq_length)
+
+        # ── Stacks of encoder and decoder layers ─────────────────────────────
+        self.encoder_layers = nn.ModuleList(
+            [EncoderLayer(d_model, num_heads, d_ff, dropout) for _ in range(num_layers)]
+        )
+        self.decoder_layers = nn.ModuleList(
+            [DecoderLayer(d_model, num_heads, d_ff, dropout) for _ in range(num_layers)]
+        )
+
+        # ── Output projection: d_model → tgt_vocab_size ──────────────────────
+        self.fc = nn.Linear(d_model, tgt_vocab_size)
+        self.dropout = nn.Dropout(dropout)
+
+    def generate_mask(self, src, tgt):
+        # Padding mask: shape [batch, 1, 1, src_len]
+        src_mask = (src != 0).unsqueeze(1).unsqueeze(2)
+
+        # Target padding mask: shape [batch, 1, tgt_len, 1]
+        tgt_mask = (tgt != 0).unsqueeze(1).unsqueeze(3)
+
+        # Causal (no-peak) mask: lower-triangular matrix of 1s
+        seq_length = tgt.size(1)
+        nopeak_mask = (
+            1 - torch.triu(torch.ones(1, seq_length, seq_length), diagonal=1)
+        ).bool()
+
+        # Combine padding mask with causal mask
+        tgt_mask = tgt_mask & nopeak_mask
+        return src_mask, tgt_mask
+
+    def forward(self, src, tgt):
+        src_mask, tgt_mask = self.generate_mask(src, tgt)
+
+        # ── Encode source sequence ────────────────────────────────────────────
+        src_embedded = self.dropout(
+            self.positional_encoding(self.encoder_embedding(src))
+        )
+        enc_output = src_embedded
+        for enc_layer in self.encoder_layers:
+            enc_output = enc_layer(enc_output, src_mask)
+
+        # ── Decode target sequence ────────────────────────────────────────────
+        tgt_embedded = self.dropout(
+            self.positional_encoding(self.decoder_embedding(tgt))
+        )
+        dec_output = tgt_embedded
+        for dec_layer in self.decoder_layers:
+            dec_output = dec_layer(dec_output, enc_output, src_mask, tgt_mask)
+
+        # ── Project to vocabulary ─────────────────────────────────────────────
+        output = self.fc(dec_output)
+        # shape: [batch, tgt_seq_length, tgt_vocab_size]
+        return output</code></pre>
+            </div>
+
+            <h3>Instantiating the Model</h3>
+            <div class="code-wrap">
+                <div class="code-header">
+                    <span class="code-title">Creating a Transformer Instance</span>
+                    <span class="code-lang">Python · PyTorch</span>
+                </div>
+                <pre><code class="language-python"># Hyperparameters matching the original "Attention Is All You Need" paper
+transformer = Transformer(
+    src_vocab_size  = 5000,   # source vocabulary size
+    tgt_vocab_size  = 5000,   # target vocabulary size
+    d_model         = 512,    # model dimension
+    num_heads       = 8,      # attention heads
+    num_layers      = 6,      # encoder/decoder stack depth
+    d_ff            = 2048,   # feed-forward inner dimension (4 × d_model)
+    max_seq_length  = 100,    # maximum sequence length
+    dropout         = 0.1     # dropout rate
+)
+
+# Count parameters
+total_params = sum(p.numel() for p in transformer.parameters())
+print(f"Total parameters: {total_params:,}")
+# → Total parameters: 44,139,520</code></pre>
+            </div>
+
+            <div class="callout">
+                <p><strong>What happens during a forward pass?</strong> Source tokens → embeddings + positional encoding
+                    → 6 encoder layers (each doing self-attention + FFN) → encoder output. Target tokens → embeddings +
+                    positional encoding → 6 decoder layers (each doing masked self-attention + cross-attention + FFN) →
+                    linear projection → logits over target vocabulary → softmax → next token probabilities.</p>
+            </div>
+        </section>
+
+    </article>
+
+    <footer>
+        <p>Built with PyTorch · Based on "Attention Is All You Need" (Vaswani et al., 2017) · Deep Learning from Scratch
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+
+</html>
