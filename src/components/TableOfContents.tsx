@@ -98,8 +98,9 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
       }}
     >
       <div style={{
-        background: '#111118',
-        borderRadius: '12px',
+        background: 'oklch(97% 0.005 50)',
+        border: '1px solid oklch(88% 0.006 50)',
+        borderRadius: '8px',
         overflow: 'hidden',
       }}>
 
@@ -109,7 +110,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
           fontSize: '10px',
           letterSpacing: '0.18em',
           textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.28)',
+          color: 'oklch(52% 0.012 50)',
           fontFamily: 'DM Mono, monospace',
           fontWeight: 600,
           userSelect: 'none',
@@ -144,8 +145,8 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
                   padding: '10px 20px',
                   textDecoration: 'none',
                   position: 'relative',
-                  background: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                  transition: 'background 0.18s',
+                  background: isActive ? 'oklch(94.5% 0.006 50)' : 'transparent',
+                  transition: 'background 220ms cubic-bezier(0.4,0,0.2,1)',
                 }}
               >
                 {/* Number */}
@@ -154,9 +155,9 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
                   fontSize: '11px',
                   lineHeight: '1.6',
                   flexShrink: 0,
-                  color: isActive ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.18)',
+                  color: isActive ? 'oklch(45% 0.015 50)' : 'oklch(68% 0.01 50)',
                   fontWeight: 400,
-                  transition: 'color 0.18s',
+                  transition: 'color 220ms cubic-bezier(0.4,0,0.2,1)',
                   userSelect: 'none',
                 }}>
                   {num}
@@ -166,10 +167,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
                 <span style={{
                   fontSize: '13px',
                   lineHeight: '1.55',
-                  color: isActive ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.45)',
+                  color: isActive ? 'oklch(18% 0.01 50)' : 'oklch(45% 0.012 50)',
                   fontWeight: isActive ? 600 : 400,
                   fontFamily: 'DM Mono, monospace',
-                  transition: 'color 0.18s, font-weight 0.18s',
+                  transition: 'color 220ms cubic-bezier(0.4,0,0.2,1), font-weight 220ms cubic-bezier(0.4,0,0.2,1)',
                 }}>
                   {h.text}
                 </span>
@@ -181,7 +182,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
         {/* ── Progress ── */}
         <div style={{
           padding: '14px 20px 18px',
-          borderTop: '1px solid rgba(255,255,255,0.05)',
+          borderTop: '1px solid oklch(88% 0.006 50)',
         }}>
           <div style={{
             display: 'flex',
@@ -191,14 +192,14 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
           }}>
             <span style={{
               fontSize: '11px',
-              color: 'rgba(255,255,255,0.28)',
+              color: 'oklch(52% 0.012 50)',
               fontFamily: 'DM Mono, monospace',
             }}>
               Reading progress
             </span>
             <span style={{
               fontSize: '11px',
-              color: 'rgba(255,255,255,0.28)',
+              color: 'oklch(52% 0.012 50)',
               fontFamily: 'DM Mono, monospace',
             }}>
               {Math.round(readPercent)}%
@@ -207,16 +208,16 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
           <div style={{
             width: '100%',
             height: '3px',
-            background: 'rgba(255,255,255,0.07)',
+            background: 'oklch(88% 0.006 50)',
             borderRadius: '2px',
             overflow: 'hidden',
           }}>
             <div style={{
               height: '100%',
               width: `${readPercent}%`,
-              background: 'rgba(255,255,255,0.4)',
+              background: '#ff5c35',
               borderRadius: '2px',
-              transition: 'width 0.3s ease',
+              transition: 'width 420ms cubic-bezier(0.16, 1, 0.3, 1)',
             }} />
           </div>
         </div>

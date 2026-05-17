@@ -22,33 +22,46 @@ const HeroSection: React.FC = () => {
 
       <div className="hero-left">
         <div className="hero-tag"><span className="blink"></span> Available for opportunities</div>
-        <h1><span className="h1-intro">Hi, I'm</span><span className="name">Saurab<br/>Shrestha</span></h1>
+        <h1><span className="h1-intro">Hi, I'm</span><span className="name">Saurab<br />Shrestha</span></h1>
         <p className="hero-thesis">
-          Standard RAG answers questions.<br/>
+          Standard RAG answers questions.<br />
           I'm building a system that <em>investigates</em> them.
         </p>
         <p className="hero-desc">
-          Full-stack developer and AI/ML engineer from Bhaktapur, Nepal.
-          Currently building NeuralNoodle: an agentic research system that
-          tracks hypotheses, maps contradictions, and knows when it's done.
+          An agentic research system that tracks hypotheses,
+          maps contradictions, and knows when it's done.
         </p>
         <div className="hero-chips">
           <span className="chip chip--anchor">Bhaktapur, Nepal</span>
-          <span className="chip">I think in systems</span>
-          <span className="chip">I love playful code</span>
+          <span className="chip">LangGraph</span>
+          <span className="chip">FastAPI</span>
+          <span className="chip">Qdrant</span>
+          <span className="chip">Research systems</span>
         </div>
         <div className="hero-actions">
           <Link to="/work" className="btn-primary">View My Work</Link>
           <a href="#contact" onClick={handleContactClick} className="btn-ghost">Get In Touch</a>
         </div>
+        <p className="hero-now">
+          <span className="hero-now-label">Currently</span>
+          <span className="hero-now-text">Building <a href="https://github.com/Saurab-Shrestha/NeuralNoodle" target="_blank" rel="noreferrer">NeuralNoodle</a> · LangGraph · Qdrant · FastAPI</span>
+        </p>
       </div>
 
       <div className="hero-right">
-        <div className="photo-glare photo-glare-1"></div>
-        <div className="photo-glare photo-glare-2"></div>
-        <div className="photo-frame">
-          <div className="photo-inner">
-            <img src="/assets/saurab-me.png" alt="Saurab Shrestha" />
+        <div className="hero-right-inner">
+          <div className="photo-frame">
+            <div className="photo-inner">
+              <img src="/assets/saurab-me.png" alt="Saurab Shrestha" />
+            </div>
+            <div className="photo-frame-meta photo-frame-meta--tl">
+              <span>Focus</span>
+              <strong>Agentic RAG</strong>
+            </div>
+            <div className="photo-frame-meta photo-frame-meta--br">
+              <span>Based in</span>
+              <strong>Nepal</strong>
+            </div>
           </div>
         </div>
       </div>

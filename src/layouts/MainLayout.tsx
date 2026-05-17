@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 
@@ -7,6 +8,7 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const location = useLocation();
   const cursorDotRef = useRef<HTMLDivElement>(null);
   const cursorRingRef = useRef<HTMLDivElement>(null);
   const scrollProgRef = useRef<HTMLDivElement>(null);
@@ -24,11 +26,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     
     document.addEventListener('mousemove', handleMouseMove);
 
+    // Tuned lerp — a touch slower than 0.12 gives the ring more "trail"
+    // behind the dot, reads as smoother.
     const animateCursor = () => {
       const pos = mousePos.current;
-      pos.rx += (pos.mx - pos.rx) * 0.12;
-      pos.ry += (pos.my - pos.ry) * 0.12;
-      
+      pos.rx += (pos.mx - pos.rx) * 0.16;
+      pos.ry += (pos.my - pos.ry) * 0.16;
+
       if (cursorDotRef.current && cursorRingRef.current) {
         cursorDotRef.current.style.left = pos.mx + 'px';
         cursorDotRef.current.style.top = pos.my + 'px';
@@ -50,26 +54,50 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
     window.addEventListener('scroll', handleScroll);
 
-    // 3. Scroll Reveal initialization
+    // 3. Scroll Reveal — in/out with staggered entrance
+    const observed = new WeakSet<Element>();
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('visible'), i * 80);
-          io.unobserve(e.target);
+      // Only stagger entering elements; exits should be immediate-ish so they don't
+      // feel laggy when scrolling fast in the other direction.
+      const entering = entries.filter(e => e.isIntersecting);
+      entering.forEach((e, i) => {
+        const el = e.target as HTMLElement;
+        el.classList.remove('exit');
+        // Cap the stagger so a long batch doesn't feel like a wave.
+        const delay = Math.min(i, 6) * 90;
+        setTimeout(() => el.classList.add('visible'), delay);
+      });
+      entries.filter(e => !e.isIntersecting).forEach(e => {
+        const el = e.target as HTMLElement;
+        if (el.classList.contains('visible')) {
+          el.classList.remove('visible');
+          el.classList.add('exit');
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-    const observerTarget = document.querySelectorAll('.reveal, .reveal-left, .tl-item');
-    observerTarget.forEach(el => io.observe(el));
+    const observeAll = () => {
+      document.querySelectorAll('.reveal, .reveal-left, .tl-item').forEach(el => {
+        if (!observed.has(el)) {
+          observed.add(el);
+          io.observe(el);
+        }
+      });
+    };
+    observeAll();
+
+    // Watch for elements added later (lazy routes, Suspense fallback → real content)
+    const mo = new MutationObserver(() => observeAll());
+    mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       window.removeEventListener('scroll', handleScroll);
       io.disconnect();
+      mo.disconnect();
     };
-  }, [children]); // Re-observe when children change
+  }, [location.pathname]);
 
   return (
     <div className="portfolio-2026 min-h-screen flex flex-col">

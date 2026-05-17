@@ -91,8 +91,11 @@ const ContactSection: React.FC = () => {
         <div className="contact-inner">
 
           <div className="contact-left reveal">
-            <h2>Ready to<br />build something<br /><em>great together?</em></h2>
-            <p>I'd love to hear from you — whether it's a project idea, a collaboration, or just a chat about technology. Let's make something remarkable.</p>
+            <div className="section-label">
+              <span className="num">05</span> Contact
+            </div>
+            <h2>Let's build<br /><em>something.</em></h2>
+            <p>A project idea, a collaboration, or just a chat about technology — I'd love to hear from you.</p>
             <div className="contact-links">
               <a href="mailto:shresthasaurab030@gmail.com" className="contact-link-row">
                 <span className="contact-link-label">Email</span>
@@ -102,9 +105,9 @@ const ContactSection: React.FC = () => {
                 <span className="contact-link-label">Location</span>
                 <span className="contact-link-value">Bhaktapur, Nepal — open to remote</span>
               </div>
-              <a href="https://github.com/saurabshrestha" target="_blank" rel="noreferrer" className="contact-link-row">
+              <a href="https://github.com/Saurab-Shrestha" target="_blank" rel="noreferrer" className="contact-link-row">
                 <span className="contact-link-label">GitHub</span>
-                <span className="contact-link-value">github.com/saurabshrestha</span>
+                <span className="contact-link-value">github.com/Saurab-Shrestha</span>
               </a>
             </div>
           </div>
@@ -214,7 +217,7 @@ const ContactSection: React.FC = () => {
                     aria-disabled={status === 'sending'}
                     style={{ flex: 1, border: 'none', cursor: status === 'sending' ? 'wait' : 'none', opacity: status === 'sending' ? 0.7 : 1 }}
                   >
-                    {status === 'sending' ? 'Sending…' : '✉ Send Message'}
+                    {status === 'sending' ? 'Sending…' : 'Send Message'}
                   </button>
                   <a
                     href="mailto:shresthasaurab030@gmail.com"

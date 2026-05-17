@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTilt } from '../../hooks/useTilt';
 
 interface Project {
   id: string;
@@ -20,10 +19,10 @@ const NeuralNoodleThumbnail: React.FC = () => (
     aria-hidden="true"
     style={{ width: '100%', height: '100%', display: 'block' }}
   >
-    <rect width="480" height="270" fill="#080810" />
+    <rect width="480" height="270" fill="#f5f3f0" />
     {/* Grid */}
-    <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-    <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+    <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(30,20,15,0.06)" strokeWidth="1" />
+    <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(30,20,15,0.06)" strokeWidth="1" />
     {/* Evidence nodes */}
     <circle cx="120" cy="80" r="5" fill="rgba(255,92,53,0.9)" />
     <circle cx="240" cy="50" r="5" fill="rgba(255,92,53,0.9)" />
@@ -61,10 +60,10 @@ const SvufeThumbnail: React.FC = () => (
     aria-hidden="true"
     style={{ width: '100%', height: '100%', display: 'block' }}
   >
-    <rect width="480" height="270" fill="#0f0f18" />
+    <rect width="480" height="270" fill="#f0ede8" />
     {/* Grid */}
-    <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-    <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+    <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(30,20,15,0.07)" strokeWidth="1" />
+    <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(30,20,15,0.07)" strokeWidth="1" />
     {/* Signature A — irregular waveform */}
     <polyline
       points="32,160 60,100 88,175 116,85 144,155 172,110 200,165 228,95 240,135"
@@ -84,7 +83,7 @@ const SvufeThumbnail: React.FC = () => (
       strokeLinejoin="round"
     />
     {/* Divider */}
-    <line x1="240" y1="60" x2="240" y2="210" stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="4 4" />
+    <line x1="240" y1="60" x2="240" y2="210" stroke="rgba(30,20,15,0.15)" strokeWidth="1" strokeDasharray="4 4" />
     {/* Verified badge */}
     <circle cx="390" cy="52" r="22" fill="rgba(29,158,117,0.15)" stroke="rgba(92,232,200,0.4)" strokeWidth="1" />
     <polyline
@@ -144,72 +143,37 @@ const projects: Project[] = [
   },
 ];
 
-const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
-  const { elementRef, isVisible, handleMouseMove, handleMouseLeave } = useTilt<HTMLDivElement>({ maxRotation: 10 });
-
+const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
+  const isReversed = index % 2 === 1;
   return (
-    <div
-      ref={elementRef}
-      className={`project-card ${isVisible ? 'visible' : ''}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+    <Link
+      to={`/work/${project.id}`}
+      className={`project-row reveal ${isReversed ? 'project-row--reversed' : ''}`}
     >
-      <div className="project-num">{project.num}</div>
-      <div className="project-type">{project.type}</div>
-      <div className="project-thumb project-thumb--screenshot">
+      <div className="project-row-visual">
         {project.thumbnail}
       </div>
-      <div className="project-name">{project.name}</div>
-      <p className="project-desc">{project.desc}</p>
-
-      <div className="project-tech">
-        {project.tech.map((t, i) => (
-          <span key={i} className="tech-badge">{t}</span>
-        ))}
-      </div>
-
-      <div className="project-links">
-        <Link to={`/work/${project.id}`} className="project-link">
-          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-          View Details
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-const HeroProjectCard: React.FC<{ project: Project }> = ({ project }) => {
-  const { elementRef, isVisible } = useTilt<HTMLDivElement>({ maxRotation: 0 });
-
-  return (
-    <div ref={elementRef} className={`hero-project ${isVisible ? 'visible' : ''}`}>
-      <div className="hero-project-visual">
-        {project.thumbnail}
-      </div>
-      <div className="hero-project-content">
-        <div className="hero-project-label">
-          <span className="hero-project-num">{project.num}</span>
-          <span className="hero-project-type">{project.type}</span>
+      <div className="project-row-content">
+        <div className="project-row-meta">
+          <span className="project-row-num">{project.num}</span>
+          <span className="project-row-type">{project.type}</span>
         </div>
-        <h3 className="hero-project-name">{project.name}</h3>
-        <p className="hero-project-desc">{project.desc}</p>
-        <div className="project-tech" style={{ marginBottom: '32px' }}>
+        <h3 className="project-row-name">{project.name}</h3>
+        <p className="project-row-desc">{project.desc}</p>
+        <div className="project-row-tech">
           {project.tech.map((t, i) => (
             <span key={i} className="tech-badge">{t}</span>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Link to={`/work/${project.id}`} className="btn-primary">
-            Read Case Study →
-          </Link>
-          {project.github && project.github !== '#' && (
-            <a href={project.github} target="_blank" rel="noreferrer" className="btn-ghost">
-              GitHub →
-            </a>
-          )}
-        </div>
+        <span className="project-row-cta">
+          Read case study
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="13 6 19 12 13 18" />
+          </svg>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -221,20 +185,24 @@ const ProjectsSection: React.FC = () => {
       <section id="projects">
         <div className="projects-header">
           <div>
-            <div className="section-label"><span className="num">03</span> Featured Work</div>
-            <h2>Recent <em>projects</em></h2>
+            <div className="section-label">
+              <span className="num">03</span> Selected Work
+            </div>
+            <h2>Selected <em>projects</em></h2>
           </div>
-          <Link to="/work" className="btn-ghost">View All →</Link>
+          <Link to="/work" className="writing-archive-link">
+            View all
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="13 6 19 12 13 18" />
+            </svg>
+          </Link>
         </div>
 
-        <div className="projects-container">
-          {projects.length > 0 && <HeroProjectCard project={projects[0]} />}
-
-          <div className="projects-grid">
-            {projects.slice(1).map((p) => (
-              <ProjectCard key={p.id} project={p} />
-            ))}
-          </div>
+        <div className="projects-list">
+          {projects.map((p, i) => (
+            <ProjectRow key={p.id} project={p} index={i} />
+          ))}
         </div>
       </section>
     </>

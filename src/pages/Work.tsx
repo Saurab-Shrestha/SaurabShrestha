@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PROJECTS_CONTENT } from '../data/content';
-import { useTilt } from '../hooks/useTilt';
 
 const PROJECT_THUMBNAILS: Record<string, React.ReactNode> = {
   neuralnoodle: (
     <svg viewBox="0 0 480 270" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ width: '100%', height: '100%', display: 'block' }}>
-      <rect width="480" height="270" fill="#080810" />
-      <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-      <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+      <rect width="480" height="270" fill="#f5f3f0" />
+      <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(30,20,15,0.06)" strokeWidth="1" />
+      <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(30,20,15,0.06)" strokeWidth="1" />
       <circle cx="120" cy="80" r="5" fill="rgba(255,92,53,0.9)" />
       <circle cx="240" cy="50" r="5" fill="rgba(255,92,53,0.9)" />
       <circle cx="360" cy="80" r="5" fill="rgba(255,92,53,0.6)" />
@@ -47,9 +46,9 @@ const PROJECT_THUMBNAILS: Record<string, React.ReactNode> = {
       aria-hidden="true"
       style={{ width: '100%', height: '100%', display: 'block' }}
     >
-      <rect width="480" height="270" fill="#0f0f18" />
-      <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-      <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+      <rect width="480" height="270" fill="#f0ede8" />
+      <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(30,20,15,0.07)" strokeWidth="1" />
+      <line x1="240" y1="0" x2="240" y2="270" stroke="rgba(30,20,15,0.07)" strokeWidth="1" />
       <polyline
         points="32,160 60,100 88,175 116,85 144,155 172,110 200,165 228,95 240,135"
         fill="none" stroke="rgba(255,92,53,0.6)" strokeWidth="2"
@@ -60,7 +59,7 @@ const PROJECT_THUMBNAILS: Record<string, React.ReactNode> = {
         fill="none" stroke="rgba(92,232,200,0.5)" strokeWidth="2"
         strokeLinecap="round" strokeLinejoin="round"
       />
-      <line x1="240" y1="60" x2="240" y2="210" stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="4 4" />
+      <line x1="240" y1="60" x2="240" y2="210" stroke="rgba(30,20,15,0.15)" strokeWidth="1" strokeDasharray="4 4" />
       <circle cx="390" cy="52" r="22" fill="rgba(29,158,117,0.15)" stroke="rgba(92,232,200,0.4)" strokeWidth="1" />
       <polyline points="381,52 388,59 401,45" fill="none" stroke="#5ce8c8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       <text x="116" y="218" fontFamily="monospace" fontSize="9" fill="rgba(255,92,53,0.5)" letterSpacing="2" textAnchor="middle">SAMPLE A</text>
@@ -70,45 +69,47 @@ const PROJECT_THUMBNAILS: Record<string, React.ReactNode> = {
   ),
 };
 
-const WorkItem: React.FC<{ project: any }> = ({ project }) => {
-  const { elementRef, isVisible, handleMouseMove, handleMouseLeave } = useTilt<HTMLDivElement>({ maxRotation: 5 });
+const WorkItem: React.FC<{ project: any; index: number }> = ({ project, index }) => {
+  const isReversed = index % 2 === 1;
   const thumbnail = PROJECT_THUMBNAILS[project.id];
+  const num = String(index + 1).padStart(2, '0');
 
   return (
-    <div
-      ref={elementRef}
-      className={`work-item ${isVisible ? 'visible' : ''} py-24`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+    <Link
+      to={`/work/${project.id}`}
+      className={`project-row reveal ${isReversed ? 'project-row--reversed' : ''}`}
     >
-      <div className="about-grid" style={{ alignItems: 'start', gridTemplateColumns: 'minmax(300px, 1fr) 1.5fr' }}>
-        <div className="work-image-wrap">
-          <div
-            className="project-thumb project-thumb--screenshot"
-            style={{ aspectRatio: '16/11', marginBottom: 0, borderRadius: '2px' }}
-          >
-            {thumbnail ?? (
-              <div className={`project-thumb-bg ${project.bg}`} style={{ fontSize: '42px' }}>
-                {project.name.split(' ').map((w: string) => w[0]).join('')}
-              </div>
-            )}
+      <div className="project-row-visual">
+        {thumbnail ?? (
+          <div style={{
+            width: '100%', height: '100%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'var(--font-display)', fontStyle: 'italic',
+            fontSize: '42px', color: 'var(--muted)'
+          }}>
+            {project.name.split(' ').map((w: string) => w[0]).join('')}
           </div>
-        </div>
-        <div className="work-details">
-          <div className="project-type" style={{ marginBottom: '10px' }}>{project.tag}</div>
-          <h3 className="project-name" style={{ fontSize: '32px', marginBottom: '16px' }}>{project.name}</h3>
-          <p className="project-desc" style={{ fontSize: '14px', lineHeight: '1.9', color: 'var(--muted)', marginBottom: '32px' }}>
-            {project.desc}
-          </p>
-          <div className="project-tech" style={{ marginBottom: '36px' }}>
-            {project.tech.map((t: string) => <span key={t} className="tech-badge">{t}</span>)}
-          </div>
-          <div className="project-links">
-            <Link to={`/work/${project.id}`} className="btn-primary" style={{ padding: '12px 24px', fontSize: '11px' }}>View Case Study →</Link>
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+      <div className="project-row-content">
+        <div className="project-row-meta">
+          <span className="project-row-num">{num}</span>
+          <span className="project-row-type">{project.tag}</span>
+        </div>
+        <h3 className="project-row-name">{project.name}</h3>
+        <p className="project-row-desc">{project.desc}</p>
+        <div className="project-row-tech">
+          {project.tech.map((t: string) => <span key={t} className="tech-badge">{t}</span>)}
+        </div>
+        <span className="project-row-cta">
+          Read case study
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="13 6 19 12 13 18" />
+          </svg>
+        </span>
+      </div>
+    </Link>
   );
 };
 
@@ -120,23 +121,23 @@ const Work: React.FC = () => {
   const projects = Object.values(PROJECTS_CONTENT);
 
   return (
-    <div className="work-page pt-24 pb-24">
-      <section className="work-hero">
-        <div className="section-label"><span className="num">03</span> Portfolio</div>
-        <h2>Selected <em>Technical Work</em></h2>
-        <p className="work-subtitle" style={{ color: 'var(--muted)', fontSize: '13px', maxWidth: '500px', marginTop: '16px', lineHeight: 1.8 }}>
-          Solving complex problems at the intersection of web architecture and machine learning.
-        </p>
-      </section>
+    <section id="projects" className="work-page">
+      <div className="projects-header" style={{ marginBottom: '72px' }}>
+        <div>
+          <div className="section-label"><span className="num">03</span> Selected Work</div>
+          <h2>Selected <em>technical work</em></h2>
+          <p className="writing-intro">
+            Solving complex problems at the intersection of web architecture and machine learning.
+          </p>
+        </div>
+      </div>
 
-      <div className="section-divider"></div>
-
-      <section className="work-list">
-        {projects.map((p) => (
-          <WorkItem key={p.id} project={p} />
+      <div className="projects-list">
+        {projects.map((p, i) => (
+          <WorkItem key={p.id} project={p} index={i} />
         ))}
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 

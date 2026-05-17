@@ -51,7 +51,7 @@ const BlogPost: React.FC = () => {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                style={{ fontSize: '11px', fontFamily: 'DM Mono, monospace', letterSpacing: '0.08em', color: 'var(--muted)', textDecoration: 'none', transition: 'color 0.15s' }}
+                style={{ fontSize: '11px', fontFamily: 'DM Mono, monospace', letterSpacing: '0.08em', color: 'var(--muted)', textDecoration: 'none', transition: 'color 220ms cubic-bezier(0.4,0,0.2,1)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted)')}
               >

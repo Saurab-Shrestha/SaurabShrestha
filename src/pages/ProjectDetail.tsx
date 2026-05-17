@@ -22,7 +22,7 @@ const ProjectDetail: React.FC = () => {
           fontSize: '11px', color: 'var(--muted)', textDecoration: 'none',
           border: '1px solid var(--border)', padding: '6px 14px',
           letterSpacing: '0.05em', marginBottom: '40px',
-          transition: 'color 0.2s, border-color 0.2s',
+          transition: 'color 220ms cubic-bezier(0.4,0,0.2,1), border-color 220ms cubic-bezier(0.4,0,0.2,1)',
         }}>← Back to Work</Link>
 
         <div style={{ fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '12px', fontFamily: 'DM Mono, monospace' }}>Case Study</div>
@@ -56,9 +56,10 @@ const ProjectDetail: React.FC = () => {
 
       {/* ── HERO THUMB ── */}
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 40px 48px' }}>
-        <div className={`project-thumb ${project.bg}`} style={{
+        <div style={{
           width: '100%', height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '96px', fontWeight: 800, letterSpacing: '0.05em', borderRadius: '2px',
+          background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--muted)',
         }}>
           {project.name.split(' ').map((w: string) => w[0]).join('')}
         </div>

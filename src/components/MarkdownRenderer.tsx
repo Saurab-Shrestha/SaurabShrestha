@@ -245,7 +245,7 @@ const CodeBlock: React.FC<{ lang: string; code: string }> = ({ lang, code }) => 
               color: showLines ? '#82aaff' : '#2a4060',
               fontFamily: 'DM Mono, monospace',
               fontSize: '10px',
-              transition: 'all 0.15s',
+              transition: 'background 220ms cubic-bezier(0.4,0,0.2,1), border-color 220ms cubic-bezier(0.4,0,0.2,1), color 220ms cubic-bezier(0.4,0,0.2,1)',
             }}
           >
             #
@@ -267,7 +267,7 @@ const CodeBlock: React.FC<{ lang: string; code: string }> = ({ lang, code }) => 
               fontFamily: 'DM Mono, monospace',
               fontSize: '10px',
               letterSpacing: '0.05em',
-              transition: 'all 0.15s',
+              transition: 'background 220ms cubic-bezier(0.4,0,0.2,1), border-color 220ms cubic-bezier(0.4,0,0.2,1), color 220ms cubic-bezier(0.4,0,0.2,1)',
             }}
           >
             {copied ? (
@@ -486,7 +486,7 @@ function processInline(text: string, ctxKey: string, basePath?: string): React.R
               textDecoration: 'none',
               borderBottom: '1px solid currentColor',
               paddingBottom: '1px',
-              transition: 'opacity 0.15s',
+              transition: 'opacity 220ms cubic-bezier(0.4,0,0.2,1)',
             }}>
             {m[1]}
           </a>
@@ -632,8 +632,8 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, headings, 
       nodes.push(
         <blockquote key={key} style={{
           position: 'relative',
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'oklch(97% 0.005 50)',
+          border: '1px solid oklch(88% 0.006 50)',
           padding: '16px 20px',
           margin: '28px 0',
         }}>
